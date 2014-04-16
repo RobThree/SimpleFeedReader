@@ -3,7 +3,7 @@
   <metadata>
     <id>SimpleFeedReader</id>
     <title>SimpleFeedReader</title>
-    <version>1.0.0.0</version>
+    <version>1.0.1.0</version>
     <authors>RobIII</authors>
     <owners>RobIII</owners>
     <projectUrl>https://github.com/RobThree/SimpleFeedReader</projectUrl>
@@ -17,7 +17,7 @@
     <releaseNotes>
       * Initial release
     </releaseNotes>
-    <tags>identicon</tags>
+    <tags>rss atom syndication feed</tags>
   </metadata>
   <files>
     <file src="SimpleFeedReader\bin\Release\SimpleFeedReader.dll" target="lib\net40-client" />
