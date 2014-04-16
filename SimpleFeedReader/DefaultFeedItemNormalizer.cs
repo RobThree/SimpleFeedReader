@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -86,12 +87,12 @@ namespace SimpleFeedReader
         private static string HtmlDecode(string value, int threshold = 5)
         {
             int c = 0;
-            string newvalue = HttpUtility.HtmlDecode(value);
+            string newvalue = WebUtility.HtmlDecode(value);
             while (!newvalue.Equals(value) && c < threshold)    //Keep decoding (if a string is double/triple/... encoded we want the original)
             {
                 c++;
                 value = newvalue;
-                newvalue = HttpUtility.HtmlDecode(value);
+                newvalue = WebUtility.HtmlDecode(value);
             }
             if (c >= threshold) //Decoding threshold exceeded?
                 return null;
