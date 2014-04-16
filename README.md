@@ -1,5 +1,4 @@
-SimpleFeedReader
-================
+#  ![Logo](https://raw.githubusercontent.com/RobThree/SimpleFeedReader/master/Gfx/icon.png) SimpleFeedReader
 
 Easy to use, simple, Syndication feed reader (Atom / RSS). Available as [Nuget Package](https://www.nuget.org/packages/SimpleFeedReader/).
 
