@@ -32,7 +32,7 @@
       <DocumentationSource sourceFile="..\SimpleFeedReader\bin\Release\SimpleFeedReader.xml" />
     </DocumentationSources>
     <ProjectSummary>&amp;lt%3bpara&amp;gt%3bThe SimpleFeedReader library is used for retrieving syndication feeds in a quick and easy manner abstracting details and normalization of items even further than the .Net&amp;#39%3bs System.Services.Syndication does.&amp;lt%3b/para&amp;gt%3b</ProjectSummary>
-    <HelpFileVersion>1.0.0.0</HelpFileVersion>
+    <HelpFileVersion>1.0.2.0</HelpFileVersion>
     <MaximumGroupParts>2</MaximumGroupParts>
     <NamespaceGrouping>False</NamespaceGrouping>
     <SyntaxFilters>Standard</SyntaxFilters>
@@ -43,6 +43,10 @@
     <NamespaceSummaries>
       <NamespaceSummaryItem name="SimpleFeedReader" isDocumented="True" xmlns="">&lt;para&gt;Contains classes and interfaces for the SimpleFeedReader library.&lt;/para&gt;</NamespaceSummaryItem>
     </NamespaceSummaries>
+    <PlugInNamespaces>ms.vsipcc+, ms.vsexpresscc+</PlugInNamespaces>
+    <CollectionTocStyle>Hierarchical</CollectionTocStyle>
+    <MSHelp2SdkLinkType>Msdn</MSHelp2SdkLinkType>
+    <IncludeStopWordList>True</IncludeStopWordList>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in
        order for Visual Studio to perform the build.  The others are optional

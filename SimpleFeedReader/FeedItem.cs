@@ -9,6 +9,11 @@ namespace SimpleFeedReader
     public class FeedItem
     {
         /// <summary>
+        /// The Id of the <see cref="FeedItem"/>.
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
         /// The Title of the <see cref="FeedItem"/>.
         /// </summary>
         public string Title { get; set; }

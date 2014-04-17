@@ -25,11 +25,13 @@ namespace SimpleFeedReaderTests
             Assert.AreEqual("Title 1", items[0].Title);
             Assert.IsTrue(items[0].Summary.StartsWith("Lorem ipsum dolor sit"));
             Assert.IsNull(items[0].Content);
+            Assert.AreEqual("tag:example.org,1999:blog-123456789123456789123456789.post-987564321987654231", items[0].Id);
 
             Assert.IsNull(items[1].Title);
             Assert.IsNull(items[1].Summary);
             Assert.IsNull(items[1].Content);
             Assert.IsNull(items[1].Uri);
+            Assert.IsNull(items[1].Id);
 
             Assert.IsTrue(items[0].GetContent().StartsWith("Lorem ipsum dolor sit"));
             Assert.IsTrue(items[0].GetSummary().StartsWith("Lorem ipsum dolor sit"));
@@ -115,11 +117,13 @@ namespace SimpleFeedReaderTests
             Assert.AreEqual("Summary1", items[0].Summary);
             Assert.AreEqual("Test1", items[0].Title);
             Assert.AreEqual("HTML content", items[0].Content);
+            Assert.AreEqual("urn:uuid:0ea6c57b-4546-4264-8b96-13434c349d87", items[0].Id);
 
             Assert.AreEqual("http://example.org/foo/bar/2", items[1].Uri.ToString());
             Assert.AreEqual("Summary2", items[1].Summary);
             Assert.AreEqual("Test2", items[1].Title);
             Assert.AreEqual("Text content", items[1].Content);
+            Assert.AreEqual("urn:uuid:d58672c4-f62e-483e-ab00-ff0940113e29", items[1].Id);
         }
 
         [TestMethod]

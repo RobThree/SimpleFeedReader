@@ -46,6 +46,7 @@ namespace SimpleFeedReader
 
             return new FeedItem
             {
+                Id = string.IsNullOrEmpty(item.Id) ? null  : item.Id.Trim(),
                 Title = item.Title == null ? null : Normalize(item.Title.Text),
                 Content = item.Content == null ? null : Normalize(((TextSyndicationContent)item.Content).Text),
                 Summary = item.Summary == null ? null : Normalize(item.Summary.Text),
