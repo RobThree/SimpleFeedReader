@@ -39,3 +39,5 @@ You can implement your own `IFeedItemNormalizer` (see the [UnitTest project](htt
 Included in the project is a [Sandcastle Helpfile Builder project](https://github.com/RobThree/SimpleFeedReader/tree/master/Help) that creates a helpfile for easy to use documentation.
 
 The project is aimed at easy, don't-make-me-think, retrieval of syndication feeds' entries. It is by no means intended as full-fledged feedreader. It is, however, easily extensible for your purposes (againm, see the [UnitTest project](https://github.com/RobThree/SimpleFeedReader/tree/master/SimpleFeedReaderTests) for examples; the `ExtendedFeedItem` and `ExtendedFeedItemNormalizer` are nice concrete examples of this idea).
+
+[![Build status](https://ci.appveyor.com/api/projects/status/wy2swaddwhukotg8)](https://ci.appveyor.com/project/RobIII/simplefeedreader)
