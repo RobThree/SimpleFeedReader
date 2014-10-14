@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.ServiceModel.Syndication;
 
 namespace SimpleFeedReader
@@ -36,7 +37,18 @@ namespace SimpleFeedReader
         /// <summary>
         /// The Date of the <see cref="FeedItem"/>.
         /// </summary>
-        public DateTimeOffset Date { get; set; }
+        [Obsolete("Split into PublishDate and LastUpdatedDate")]
+        public DateTimeOffset Date { get { return new[] { this.PublishDate, this.LastUpdatedDate }.Max(); } }
+
+        /// <summary>
+        /// The publication date of the <see cref="FeedItem"/>.
+        /// </summary>
+        public DateTimeOffset PublishDate { get; set; }
+
+        /// <summary>
+        /// The date when the feeditem was last updated <see cref="FeedItem"/>.
+        /// </summary>
+        public DateTimeOffset LastUpdatedDate { get; set; }
 
         /// <summary>
         /// Initializes a new <see cref="FeedItem"/>.
@@ -54,7 +66,8 @@ namespace SimpleFeedReader
             this.Content = item.Content;
             this.Summary = item.Summary;
             this.Uri = item.Uri;
-            this.Date = item.Date;
+            this.PublishDate = item.PublishDate;
+            this.LastUpdatedDate = item.LastUpdatedDate;
         }
 
         /// <summary>

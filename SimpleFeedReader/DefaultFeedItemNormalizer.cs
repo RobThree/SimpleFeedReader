@@ -12,7 +12,7 @@ namespace SimpleFeedReader
     /// <see cref="FeedItem.Content"/> and <see cref="FeedItem.Summary"/> of <see cref="FeedItem"/>s to the point where
     /// they no longer contain any HTML, redundant whitespace, un-normalized unicode chars and other control chars like
     /// tabs, newlines or backspaces. The <see cref="FeedItem"/>'s <see cref="FeedItem.Date"/> property will contain
-    /// whichever date is latest; the PublishDate or LastUpdatedTime.
+    /// whichever date is latest; the <see cref="FeedItem.PublishDate"/> or <see cref="FeedItem.LastUpdatedDate"/>.
     /// </summary>
     /// <remarks>
     /// You can implement a normalizer yourself by implementing the <see cref="IFeedItemNormalizer"/> interface.
@@ -46,11 +46,12 @@ namespace SimpleFeedReader
 
             return new FeedItem
             {
-                Id = string.IsNullOrEmpty(item.Id) ? null  : item.Id.Trim(),
+                Id = string.IsNullOrEmpty(item.Id) ? null : item.Id.Trim(),
                 Title = item.Title == null ? null : Normalize(item.Title.Text),
                 Content = item.Content == null ? null : Normalize(((TextSyndicationContent)item.Content).Text),
                 Summary = item.Summary == null ? null : Normalize(item.Summary.Text),
-                Date = new[] { item.PublishDate, item.LastUpdatedTime }.Max(),
+                PublishDate = item.PublishDate,
+                LastUpdatedDate = item.LastUpdatedTime == DateTimeOffset.MinValue ? item.PublishDate : item.LastUpdatedTime,
                 Uri = itemuri
             };
         }
@@ -89,7 +90,7 @@ namespace SimpleFeedReader
         {
             int c = 0;
             string newvalue = WebUtility.HtmlDecode(value);
-            while (!newvalue.Equals(value) && c < threshold)    //Keep decoding (if a string is double/triple/... encoded we want the original)
+            while (!newvalue.Equals(value) && c < threshold)    //Keep decoding (if a string is double/triple/... encoded; we want the original)
             {
                 c++;
                 value = newvalue;

@@ -7,6 +7,7 @@ using System.IO;
 using System.Net;
 using System.Xml;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace SimpleFeedReaderTests
 {
@@ -26,15 +27,24 @@ namespace SimpleFeedReaderTests
             Assert.IsTrue(items[0].Summary.StartsWith("Lorem ipsum dolor sit"));
             Assert.IsNull(items[0].Content);
             Assert.AreEqual("tag:example.org,1999:blog-123456789123456789123456789.post-987564321987654231", items[0].Id);
+            Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].PublishDate);
+            Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].LastUpdatedDate);
 
             Assert.IsNull(items[1].Title);
             Assert.IsNull(items[1].Summary);
             Assert.IsNull(items[1].Content);
             Assert.IsNull(items[1].Uri);
             Assert.IsNull(items[1].Id);
+            Assert.AreEqual(DateTimeOffset.MinValue, items[1].PublishDate);
+            Assert.AreEqual(DateTimeOffset.MinValue, items[1].LastUpdatedDate);
 
             Assert.IsTrue(items[0].GetContent().StartsWith("Lorem ipsum dolor sit"));
             Assert.IsTrue(items[0].GetSummary().StartsWith("Lorem ipsum dolor sit"));
+
+#pragma warning disable 0618
+            Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].Date);
+            Assert.AreEqual(DateTimeOffset.MinValue, items[1].Date);
+#pragma warning restore 0618
         }
 
         [TestMethod]
@@ -119,11 +129,21 @@ namespace SimpleFeedReaderTests
             Assert.AreEqual("HTML content", items[0].Content);
             Assert.AreEqual("urn:uuid:0ea6c57b-4546-4264-8b96-13434c349d87", items[0].Id);
 
+            Assert.AreEqual(DateTimeOffset.Parse("2013-03-13T13:37:31.0000000+00:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].PublishDate);
+            Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+00:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].LastUpdatedDate);
+
             Assert.AreEqual("http://example.org/foo/bar/2", items[1].Uri.ToString());
             Assert.AreEqual("Summary2", items[1].Summary);
             Assert.AreEqual("Test2", items[1].Title);
             Assert.AreEqual("Text content", items[1].Content);
             Assert.AreEqual("urn:uuid:d58672c4-f62e-483e-ab00-ff0940113e29", items[1].Id);
+            Assert.AreEqual(DateTimeOffset.MinValue, items[1].PublishDate);
+            Assert.AreEqual(DateTimeOffset.MinValue, items[1].LastUpdatedDate);
+
+#pragma warning disable 0618
+            Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+00:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].Date);
+            Assert.AreEqual(DateTimeOffset.MinValue, items[1].Date);
+#pragma warning restore 0618
         }
 
         [TestMethod]

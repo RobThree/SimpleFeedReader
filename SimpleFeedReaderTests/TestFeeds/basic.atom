@@ -12,6 +12,7 @@
     <title>Test1</title>
     <link href="http://example.org/foo/bar/1"/>
     <id>urn:uuid:0ea6c57b-4546-4264-8b96-13434c349d87</id>
+    <published>2013-03-13T13:37:31Z</published>
     <updated>2014-04-16T13:57:35Z</updated>
     <summary>Summary1</summary>
     <content type="html">
@@ -22,7 +23,6 @@
     <title>Test2</title>
     <link href="http://example.org/foo/bar/2"/>
     <id>urn:uuid:d58672c4-f62e-483e-ab00-ff0940113e29</id>
-    <updated>2014-04-16T13:57:36Z</updated>
     <summary>Summary2</summary>
     <content type="text">Text content</content>
   </entry>

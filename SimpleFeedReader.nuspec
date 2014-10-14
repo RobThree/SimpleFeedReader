@@ -3,7 +3,7 @@
   <metadata>
     <id>SimpleFeedReader</id>
     <title>SimpleFeedReader</title>
-    <version>1.0.2.0</version>
+    <version>1.0.3.0</version>
     <authors>RobIII</authors>
     <owners>RobIII</owners>
     <projectUrl>https://github.com/RobThree/SimpleFeedReader</projectUrl>
@@ -16,7 +16,7 @@
       Provides classes and methods for consuming syndication feeds.
     </summary>
     <releaseNotes>
-      * Added FeedItem Id property
+      * Date property for FeedItem is now obsolete; we now have 2 properties: PublishDate and LastUpdatedDate
     </releaseNotes>
     <tags>rss atom syndication feed</tags>
   </metadata>
