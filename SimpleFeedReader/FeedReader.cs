@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Xml;
 
@@ -121,7 +122,16 @@ namespace SimpleFeedReader
         /// </returns>
         public IEnumerable<FeedItem> RetrieveFeed(string uri, IFeedItemNormalizer normalizer)
         {
-            return this.RetrieveFeed(XmlReader.Create(uri), normalizer);
+            try
+            {
+                return this.RetrieveFeed(XmlReader.Create(uri), normalizer);
+            }
+            catch
+            {
+                if (this.ThrowOnError)
+                    throw;
+            }
+            return Enumerable.Empty<FeedItem>();
         }
 
         /// <summary>
