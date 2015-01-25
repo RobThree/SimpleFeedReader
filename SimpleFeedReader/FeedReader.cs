@@ -75,6 +75,7 @@ namespace SimpleFeedReader
         /// <returns>
         /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
         /// </returns>
+        /// <remarks>This is a convenience method.</remarks>
         public IEnumerable<FeedItem> RetrieveFeeds(IEnumerable<string> uris)
         {
             return this.RetrieveFeeds(uris, this.DefaultNormalizer);
@@ -90,6 +91,7 @@ namespace SimpleFeedReader
         /// <returns>
         /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
         /// </returns>
+        /// <remarks>This is a convenience method.</remarks>
         public IEnumerable<FeedItem> RetrieveFeeds(IEnumerable<string> uris, IFeedItemNormalizer normalizer)
         {
             List<FeedItem> items = new List<FeedItem>();
