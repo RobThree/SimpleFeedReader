@@ -158,6 +158,8 @@ namespace SimpleFeedReader
         /// </returns>
         public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader, IFeedItemNormalizer normalizer)
         {
+            if (xmlReader == null)
+                throw new ArgumentNullException("xmlReader");
             if (normalizer == null)
                 throw new ArgumentNullException("normalizer");
 
