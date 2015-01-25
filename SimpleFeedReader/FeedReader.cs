@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.ServiceModel.Syndication;
 using System.Xml;
 
@@ -135,6 +136,51 @@ namespace SimpleFeedReader
             catch (Exception ex)
             {
                 Trace.TraceError(string.Format("URL: {0}, Exception: {1}", uri, ex.Message));
+                if (this.ThrowOnError)
+                    throw;
+            }
+            return items;
+        }
+
+
+        /// <summary>
+        /// Parse feed from already loaded content
+        /// </summary>
+        /// <param name="xml">RSS feed content, xml</param>
+        /// <returns>
+        /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+        /// </returns>
+        public IEnumerable<FeedItem> ParseFeed(string xml)
+        {
+            return this.ParseFeed(xml, this.DefaultNormalizer);
+        }
+
+        /// <summary>
+        /// Retrieves the specified feed.
+        /// </summary>
+        /// <param name="xml">RSS feed content, xml</param>
+        /// <param name="normalizer">
+        /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
+        /// </param>
+        /// <returns>
+        /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+        /// </returns>
+        public IEnumerable<FeedItem> ParseFeed(string xml, IFeedItemNormalizer normalizer)
+        {
+            if (normalizer == null)
+                throw new ArgumentNullException("normalizer");
+
+            var items = new List<FeedItem>();
+            try
+            {
+                Trace.TraceInformation(string.Format("Parse {0}", xml));
+                var feed = SyndicationFeed.Load(XmlReader.Create(new StringReader(xml)));
+                foreach (var item in feed.Items)
+                    items.Add(normalizer.Normalize(feed, item));
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError(string.Format("XML: {0}, Exception: {1}", xml, ex.Message));
                 if (this.ThrowOnError)
                     throw;
             }
