@@ -221,5 +221,71 @@ namespace SimpleFeedReaderTests
             }
         }
         #endregion
+
+
+        [TestMethod]
+        public void ParserXML_BasicRSSFeedTest()
+        {
+            var target = new FeedReader(true);
+
+            string xml = new StreamReader(@"TestFeeds\basic.rss").ReadToEnd();
+            var items = target.ParseFeed(xml).ToArray();
+
+            Assert.AreEqual(2, items.Length);
+
+            Assert.AreEqual("http://example.org/foo/bar/1", items[0].Uri.ToString());
+            Assert.AreEqual("Title 1", items[0].Title);
+            Assert.IsTrue(items[0].Summary.StartsWith("Lorem ipsum dolor sit"));
+            Assert.IsNull(items[0].Content);
+            Assert.AreEqual("tag:example.org,1999:blog-123456789123456789123456789.post-987564321987654231", items[0].Id);
+            Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].PublishDate);
+            Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].LastUpdatedDate);
+
+            Assert.IsNull(items[1].Title);
+            Assert.IsNull(items[1].Summary);
+            Assert.IsNull(items[1].Content);
+            Assert.IsNull(items[1].Uri);
+            Assert.IsNull(items[1].Id);
+            Assert.AreEqual(DateTimeOffset.MinValue, items[1].PublishDate);
+            Assert.AreEqual(DateTimeOffset.MinValue, items[1].LastUpdatedDate);
+
+            Assert.IsTrue(items[0].GetContent().StartsWith("Lorem ipsum dolor sit"));
+            Assert.IsTrue(items[0].GetSummary().StartsWith("Lorem ipsum dolor sit"));
+
+#pragma warning disable 0618
+            Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].Date);
+            Assert.AreEqual(DateTimeOffset.MinValue, items[1].Date);
+#pragma warning restore 0618
+        }
+
+        [TestMethod]
+        public void ParserXML_BasicActualRSSFeedTest()
+        {
+            var target = new FeedReader(new GoogleFeedItemNormalizer(), true);
+            string xml = new StreamReader(@"TestFeeds\google_snapshot.rss").ReadToEnd();
+            var items = target.ParseFeed(xml).ToArray();
+
+            Assert.AreEqual(10, items.Length);
+            Assert.IsTrue(items[0].GetContent().StartsWith("(CNN) -- Rescue boats"));
+            Assert.IsTrue(items[1].GetContent().StartsWith("Pro-Russian troops guard"));
+            Assert.IsTrue(items[2].GetContent().StartsWith("(CNN) -- Former New York"));
+            Assert.IsTrue(items[3].GetContent().StartsWith("Two blasts near the"));
+            Assert.IsTrue(items[4].GetContent().StartsWith("A three-year-old boy"));
+        }
+
+        [TestMethod]
+        public void ParserXML_BasicActualAtomFeedTest()
+        {
+            var target = new FeedReader(new GoogleFeedItemNormalizer(), true);
+            string xml = new StreamReader(@"TestFeeds\google_snapshot.atom").ReadToEnd();
+            var items = target.ParseFeed(xml).ToArray();
+
+            Assert.AreEqual(10, items.Length);
+            Assert.IsTrue(items[0].GetContent().StartsWith("(CNN) -- Rescue boats"));
+            Assert.IsTrue(items[1].GetContent().StartsWith("Pro-Russian troops guard"));
+            Assert.IsTrue(items[2].GetContent().StartsWith("(CNN) -- Former New York"));
+            Assert.IsTrue(items[3].GetContent().StartsWith("Two blasts near the"));
+            Assert.IsTrue(items[4].GetContent().StartsWith("A three-year-old boy"));
+        }
     }
 }
