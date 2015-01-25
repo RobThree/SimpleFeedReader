@@ -121,20 +121,45 @@ namespace SimpleFeedReader
         /// </returns>
         public IEnumerable<FeedItem> RetrieveFeed(string uri, IFeedItemNormalizer normalizer)
         {
+            return this.RetrieveFeed(XmlReader.Create(uri), normalizer);
+        }
+
+        /// <summary>
+        /// Retrieves the specified feed.
+        /// </summary>
+        /// <param name="xmlReader">The <see cref="XmlReader"/> to use to read the items from.</param>
+        /// <returns>
+        /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+        /// </returns>
+        public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader)
+        {
+            return this.RetrieveFeed(xmlReader, this.DefaultNormalizer);
+        }
+
+        /// <summary>
+        /// Retrieves the specified feed.
+        /// </summary>
+        /// <param name="xmlReader">The <see cref="XmlReader"/> to use to read the items from.</param>
+        /// <param name="normalizer">
+        /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
+        /// </param>
+        /// <returns>
+        /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+        /// </returns>
+        public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader, IFeedItemNormalizer normalizer)
+        {
             if (normalizer == null)
                 throw new ArgumentNullException("normalizer");
 
             var items = new List<FeedItem>();
             try
             {
-                Trace.TraceInformation(string.Format("Retrieving {0}", uri));
-                var feed = SyndicationFeed.Load(XmlReader.Create(uri));
+                var feed = SyndicationFeed.Load(xmlReader);
                 foreach (var item in feed.Items)
                     items.Add(normalizer.Normalize(feed, item));
             }
-            catch (Exception ex)
+            catch
             {
-                Trace.TraceError(string.Format("URL: {0}, Exception: {1}", uri, ex.Message));
                 if (this.ThrowOnError)
                     throw;
             }
