@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="http://example.org/test.xsl" type="text/xsl" media="screen"?>
+<?xml-stylesheet href="http://example.org/test.css" type="text/css" media="screen"?>
+<rss version="2.0">
+  <channel>
+    <title>Test RSS feed</title>
+    <link>http://example.org/</link>
+    <description></description>
+    <language>en</language>
+    <managingEditor>noreply@example.org (John Doe)</managingEditor>
+    <lastBuildDate>Wed, 16 Apr 2014 13:57:35 +0200</lastBuildDate>
+    <generator>FooBar http://www.example.org</generator>
+    <openSearch:totalResults
+      xmlns:openSearch="http://example.org/-/spec/opensearchrss/1.0/">
+      10
+    </openSearch:totalResults>
+    <openSearch:startIndex
+      xmlns:openSearch="http://example.org/-/spec/opensearchrss/1.0/">
+      1
+    </openSearch:startIndex>
+    <openSearch:itemsPerPage
+      xmlns:openSearch="http://example.org/-/spec/opensearchrss/1.0/">
+      25
+    </openSearch:itemsPerPage>
+    <atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="self"
+      href="http://example.org/foobar"
+      type="application/rss+xml" />
+    <item>
+      <title>Title 1</title>
+      <link>
+        http://example.org/foo/bar/1
+      </link>
+      <author>noreply1@example.org (John Doe 1)</author>
+      <pubDate>Wed, 16 Apr 2014 13:57:35 +0200</pubDate>
+      <guid isPermaLink="false">
+        tag:example.org,1999:blog-123456789123456789123456789.post-987564321987654231
+      </guid>
+      <description>
+        &lt;a onblur="try {parent.foo.bar();} catch(e)
+        {}"
+        href="http://example.org/foo/bar/xyz.png"&gt;&lt;img
+        style="margin: 0pt 10px 10px 0pt; float: left; cursor: pointer; width:
+        232px; height: 108px;"
+        src="http://example.org/foo/bar/xyz.png"
+        alt="" id="BLOGGER_PHOTO_ID_987564321987654231fedcba" border="0"
+        /&gt;&lt;/a&gt;&lt;br /&gt;Lorem ipsum dolor sit amet.&lt;br /&gt;
+        &lt;br /&gt;Nunc lacinia facilisis rutrum. Morbi vulputate faucibus mi
+        &lt;a href="http://www.example.org/foo/bar/abcdef.html?id=123&amp;x=abc"
+        &gt;link&lt;/a&gt; quis pellentesque. Vivamus vel mi eget est aliquet.
+        
+        &lt;br /&gt;&lt;br /&gt;
+      </description>
+      <media:thumbnail xmlns:media="http://example.org/rss/"
+        url="http://example.org/foo/bar/123abc.png"
+        height="100" width="100" />
+      <image>http://example.org/foo/bar/123abc.png</image>
+      <image>http://example.org/foo/bar/123abc_2.png</image>
+      <thr:total xmlns:thr="http://purl.org/syndication/thread/1.0">
+        0
+      </thr:total>
+    </item>
+    <!-- "Minimal" item with no title, description, pubdate etc. -->
+    <item></item>
+  </channel>
+</rss>

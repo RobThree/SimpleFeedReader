@@ -62,6 +62,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="TestFeeds\basic_image.rss">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestFeeds\basic.atom">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -38,7 +38,7 @@ namespace SimpleFeedReader
         /// <summary>
         /// The images of the <see cref="FeedItem"/>.
         /// </summary>
-        public ICollection<Uri> Images { get; set; }
+        public IEnumerable<Uri> Images { get; internal set; } = new List<Uri>();
 
         /// <summary>
         /// The Date of the <see cref="FeedItem"/>.
