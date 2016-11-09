@@ -46,8 +46,6 @@ namespace SimpleFeedReader
                 itemuri = alternatelink.GetAbsoluteUri();
             }
 
-            var feedItemImages = GetFeedItemImages(item);
-
             return new FeedItem
             {
                 Id = string.IsNullOrEmpty(item.Id) ? null : item.Id.Trim(),
@@ -57,17 +55,15 @@ namespace SimpleFeedReader
                 PublishDate = item.PublishDate,
                 LastUpdatedDate = item.LastUpdatedTime == DateTimeOffset.MinValue ? item.PublishDate : item.LastUpdatedTime,
                 Uri = itemuri,
-                Images = feedItemImages
+                Images = GetFeedItemImages(item)
             };
         }
 
-        private static IEnumerable<Uri> GetFeedItemImages(SyndicationItem syndicationItem)
+        private static IEnumerable<Uri> GetFeedItemImages(SyndicationItem item)
         {
-            return
-                syndicationItem
-                .ElementExtensions
+            return item.ElementExtensions
                 .Where(p => p.OuterName.Equals("image"))
-                    .Select(p => new Uri(p.GetObject<XElement>().Value));
+                .Select(p => new Uri(p.GetObject<XElement>().Value));
         }
 
         private static string Normalize(string value)
