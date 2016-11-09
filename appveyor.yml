@@ -1,7 +1,7 @@
 version: 1.0.0.{build}
 
 environment:
-  packageVersion: 1.0.5
+  packageVersion: 1.0.0
   
 configuration: Release
 

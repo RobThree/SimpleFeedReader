@@ -16,7 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8797CF
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{35CEBD40-E6BE-4671-B270-89C7E72CA980}"
 	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
 		buildnugetpkg.cmd = buildnugetpkg.cmd
 		LICENSE = LICENSE
 		README.md = README.md

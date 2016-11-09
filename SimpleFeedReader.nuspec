@@ -3,7 +3,7 @@
   <metadata>
     <id>SimpleFeedReader</id>
     <title>SimpleFeedReader</title>
-    <version>$version$</version>
+    <version>1.0.4.0</version>
     <authors>RobIII</authors>
     <owners>RobIII</owners>
     <projectUrl>https://github.com/RobThree/SimpleFeedReader</projectUrl>
@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://raw.githubusercontent.com/RobThree/SimpleFeedReader/master/LICENSE</licenseUrl>
     <description>Easy to use, simple, Syndication feed reader (Atom / RSS).</description>
-    <copyright>(C)2014-2016 Devcorner.nl</copyright>
+    <copyright>(C)2014 Devcorner.nl</copyright>
     <summary>
       Provides classes and methods for consuming syndication feeds.
     </summary>
