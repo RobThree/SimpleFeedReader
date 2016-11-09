@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Syndication;
 
@@ -33,6 +34,11 @@ namespace SimpleFeedReader
         /// The Uri of the <see cref="FeedItem"/>.
         /// </summary>
         public Uri Uri { get; set; }
+
+        /// <summary>
+        /// The images of the <see cref="FeedItem"/>.
+        /// </summary>
+        public IEnumerable<Uri> Images { get; internal set; } = new List<Uri>();
 
         /// <summary>
         /// The Date of the <see cref="FeedItem"/>.

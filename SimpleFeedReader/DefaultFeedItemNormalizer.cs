@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Xml.Linq;
 
 namespace SimpleFeedReader
 {
@@ -52,8 +54,16 @@ namespace SimpleFeedReader
                 Summary = item.Summary == null ? null : Normalize(item.Summary.Text),
                 PublishDate = item.PublishDate,
                 LastUpdatedDate = item.LastUpdatedTime == DateTimeOffset.MinValue ? item.PublishDate : item.LastUpdatedTime,
-                Uri = itemuri
+                Uri = itemuri,
+                Images = GetFeedItemImages(item)
             };
+        }
+
+        private static IEnumerable<Uri> GetFeedItemImages(SyndicationItem item)
+        {
+            return item.ElementExtensions
+                .Where(p => p.OuterName.Equals("image"))
+                .Select(p => new Uri(p.GetObject<XElement>().Value));
         }
 
         private static string Normalize(string value)

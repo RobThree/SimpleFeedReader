@@ -48,6 +48,43 @@ namespace SimpleFeedReaderTests
         }
 
         [TestMethod]
+        public void BasicRSSWithImageFeedTest()
+        {
+            var target = new FeedReader(true);
+            var items = target.RetrieveFeed(@"TestFeeds\basic_image.rss").ToArray();
+
+            Assert.AreEqual(2, items.Length);
+
+            Assert.AreEqual("http://example.org/foo/bar/1", items[0].Uri.ToString());
+            Assert.AreEqual("Title 1", items[0].Title);
+            Assert.IsTrue(items[0].Summary.StartsWith("Lorem ipsum dolor sit"));
+            Assert.IsNull(items[0].Content);
+            Assert.AreEqual("tag:example.org,1999:blog-123456789123456789123456789.post-987564321987654231", items[0].Id);
+            Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].PublishDate);
+            Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].LastUpdatedDate);
+
+            Assert.IsNull(items[1].Title);
+            Assert.IsNull(items[1].Summary);
+            Assert.IsNull(items[1].Content);
+            Assert.IsNull(items[1].Uri);
+            Assert.IsNull(items[1].Id);
+            Assert.AreEqual(DateTimeOffset.MinValue, items[1].PublishDate);
+            Assert.AreEqual(DateTimeOffset.MinValue, items[1].LastUpdatedDate);
+
+            Assert.IsTrue(items[0].GetContent().StartsWith("Lorem ipsum dolor sit"));
+            Assert.IsTrue(items[0].GetSummary().StartsWith("Lorem ipsum dolor sit"));
+
+#pragma warning disable 0618
+            Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].Date);
+            Assert.AreEqual(DateTimeOffset.MinValue, items[1].Date);
+#pragma warning restore 0618
+
+            Assert.IsTrue(items[0].Images.Count() == 2);
+            Assert.AreEqual(items[0].Images.ElementAt(0).ToString(), "http://example.org/foo/bar/123abc.png");
+            Assert.AreEqual(items[0].Images.ElementAt(1).ToString(), "http://example.org/foo/bar/123abc_2.png");
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(FileNotFoundException))]
         public void ThrowsWhenRequiredFeedTest1()
         {
