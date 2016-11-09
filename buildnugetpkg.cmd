@@ -1,0 +1,1 @@
+.nuget\nuget pack SimpleFeedReader.nuspec
