@@ -38,7 +38,7 @@ namespace SimpleFeedReader
         /// <summary>
         /// The images of the <see cref="FeedItem"/>.
         /// </summary>
-        public IEnumerable<Uri> Images { get; internal set; } = new List<Uri>();
+        public IEnumerable<Uri> Images { get; set; }
 
         /// <summary>
         /// The Date of the <see cref="FeedItem"/>.
@@ -59,7 +59,10 @@ namespace SimpleFeedReader
         /// <summary>
         /// Initializes a new <see cref="FeedItem"/>.
         /// </summary>
-        public FeedItem() { }
+        public FeedItem()
+        {
+            this.Images = new List<Uri>();
+        }
 
         /// <summary>
         /// Initializes a new <see cref="FeedItem"/> by copying the passed item's properties into the new instance.
@@ -67,6 +70,7 @@ namespace SimpleFeedReader
         /// <param name="item">The <see cref="FeedItem"/> to copy.</param>
         /// <remarks>This is a copy-constructor.</remarks>
         public FeedItem(FeedItem item)
+            : this()
         {
             this.Title = item.Title;
             this.Content = item.Content;
