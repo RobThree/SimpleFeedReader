@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Devcorner.nl")]
 [assembly: AssemblyProduct("SimpleFeedReaderTests")]
-[assembly: AssemblyCopyright("Copyright © Devcorner.nl 2014")]
+[assembly: AssemblyCopyright("Copyright © Devcorner.nl 2014 - 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

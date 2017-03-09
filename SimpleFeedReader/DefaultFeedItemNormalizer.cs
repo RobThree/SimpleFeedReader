@@ -55,7 +55,8 @@ namespace SimpleFeedReader
                 PublishDate = item.PublishDate,
                 LastUpdatedDate = item.LastUpdatedTime == DateTimeOffset.MinValue ? item.PublishDate : item.LastUpdatedTime,
                 Uri = itemuri,
-                Images = GetFeedItemImages(item)
+                Images = GetFeedItemImages(item),
+                Categories = item.Categories.Select(c => c.Name)
             };
         }
 

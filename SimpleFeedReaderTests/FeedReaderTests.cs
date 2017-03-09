@@ -211,6 +211,25 @@ namespace SimpleFeedReaderTests
             Assert.IsTrue(items[4].GetContent().StartsWith("A three-year-old boy"));
         }
 
+        [TestMethod]
+        public void BasicRSSCategoriesTest()
+        {
+            var target = new FeedReader();
+            var items = target.RetrieveFeed(@"TestFeeds\categories.rss").ToArray();
+            Assert.AreEqual(items[0].Categories.ElementAt(0), "NEWS");
+            Assert.AreEqual(items[0].Categories.ElementAt(1), "TEST");
+        }
+
+        [TestMethod]
+        public void BasicAtomCategoriesTest()
+        {
+            var target = new FeedReader();
+            var items = target.RetrieveFeed(@"TestFeeds\categories.atom").ToArray();
+            Assert.AreEqual(items[0].Categories.ElementAt(0), "a");
+            Assert.AreEqual(items[1].Categories.ElementAt(0), "b");
+            Assert.AreEqual(items[1].Categories.ElementAt(1), "c");
+        }
+
         #region TestClasses
         private class ExtendedFeedItem : FeedItem
         {

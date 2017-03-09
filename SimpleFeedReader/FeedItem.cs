@@ -41,6 +41,11 @@ namespace SimpleFeedReader
         public IEnumerable<Uri> Images { get; set; }
 
         /// <summary>
+        /// The vategories of the <see cref="FeedItem"/>.
+        /// </summary>
+        public IEnumerable<string> Categories { get; set; }
+
+        /// <summary>
         /// The Date of the <see cref="FeedItem"/>.
         /// </summary>
         [Obsolete("Split into PublishDate and LastUpdatedDate")]
@@ -62,6 +67,7 @@ namespace SimpleFeedReader
         public FeedItem()
         {
             this.Images = new List<Uri>();
+            this.Categories = new List<string>();
         }
 
         /// <summary>
@@ -78,6 +84,8 @@ namespace SimpleFeedReader
             this.Uri = item.Uri;
             this.PublishDate = item.PublishDate;
             this.LastUpdatedDate = item.LastUpdatedDate;
+            this.Images = item.Images;
+            this.Categories = item.Categories;
         }
 
         /// <summary>
