@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Xml;
@@ -61,11 +60,8 @@ namespace SimpleFeedReader
         /// </param>
         public FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool throwOnError)
         {
-            if (defaultFeedItemNormalizer == null)
-                throw new ArgumentNullException("defaultFeedItemNormalizer");
-
-            this.DefaultNormalizer = defaultFeedItemNormalizer;
-            this.ThrowOnError = throwOnError;
+            DefaultNormalizer = defaultFeedItemNormalizer ?? throw new ArgumentNullException("defaultFeedItemNormalizer");
+            ThrowOnError = throwOnError;
         }
 
         /// <summary>
@@ -78,7 +74,7 @@ namespace SimpleFeedReader
         /// <remarks>This is a convenience method.</remarks>
         public IEnumerable<FeedItem> RetrieveFeeds(IEnumerable<string> uris)
         {
-            return this.RetrieveFeeds(uris, this.DefaultNormalizer);
+            return RetrieveFeeds(uris, DefaultNormalizer);
         }
 
         /// <summary>
@@ -109,7 +105,7 @@ namespace SimpleFeedReader
         /// </returns>
         public IEnumerable<FeedItem> RetrieveFeed(string uri)
         {
-            return this.RetrieveFeed(uri, this.DefaultNormalizer);
+            return RetrieveFeed(uri, DefaultNormalizer);
         }
 
         /// <summary>
@@ -126,11 +122,11 @@ namespace SimpleFeedReader
         {
             try
             {
-                return this.RetrieveFeed(XmlReader.Create(uri), normalizer);
+                return RetrieveFeed(XmlReader.Create(uri), normalizer);
             }
             catch
             {
-                if (this.ThrowOnError)
+                if (ThrowOnError)
                     throw;
             }
             return Enumerable.Empty<FeedItem>();
@@ -145,7 +141,7 @@ namespace SimpleFeedReader
         /// </returns>
         public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader)
         {
-            return this.RetrieveFeed(xmlReader, this.DefaultNormalizer);
+            return RetrieveFeed(xmlReader, DefaultNormalizer);
         }
 
         /// <summary>
@@ -174,7 +170,7 @@ namespace SimpleFeedReader
             }
             catch
             {
-                if (this.ThrowOnError)
+                if (ThrowOnError)
                     throw;
             }
             return items;

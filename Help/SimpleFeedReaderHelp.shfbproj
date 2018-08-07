@@ -19,7 +19,7 @@
     <HtmlHelpName>Documentation</HtmlHelpName>
     <Language>en-US</Language>
     <CopyrightHref>http://robiii.nl</CopyrightHref>
-    <CopyrightText>%28C%29 2014-2017 Devcorner.nl</CopyrightText>
+    <CopyrightText>%28C%29 2014-2018 Devcorner.nl</CopyrightText>
     <FeedbackEMailAddress>rob%40devcorner.nl</FeedbackEMailAddress>
     <FeedbackEMailLinkText>Rob Janssen</FeedbackEMailLinkText>
     <HelpTitle>SimpleFeedReader documentation</HelpTitle>
@@ -32,7 +32,7 @@
       <DocumentationSource sourceFile="..\SimpleFeedReader\bin\Release\SimpleFeedReader.xml" />
     </DocumentationSources>
     <ProjectSummary>&amp;lt%3bpara&amp;gt%3bThe SimpleFeedReader library is used for retrieving syndication feeds in a quick and easy manner abstracting details and normalization of items even further than the .Net&amp;#39%3bs System.Services.Syndication does.&amp;lt%3b/para&amp;gt%3b</ProjectSummary>
-    <HelpFileVersion>1.0.7.0</HelpFileVersion>
+    <HelpFileVersion>1.0.8.0</HelpFileVersion>
     <MaximumGroupParts>2</MaximumGroupParts>
     <NamespaceGrouping>False</NamespaceGrouping>
     <SyntaxFilters>Standard</SyntaxFilters>

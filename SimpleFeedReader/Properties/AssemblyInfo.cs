@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Devcorner.nl")]
 [assembly: AssemblyProduct("SimpleFeedReader")]
-[assembly: AssemblyCopyright("Copyright © Devcorner.nl 2014 - 2017")]
+[assembly: AssemblyCopyright("Copyright © Devcorner.nl 2014 - 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,6 +31,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.7.0")]
-[assembly: AssemblyFileVersion("1.0.7.0")]
+[assembly: AssemblyVersion("1.0.8.0")]
+[assembly: AssemblyFileVersion("1.0.8.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0")]

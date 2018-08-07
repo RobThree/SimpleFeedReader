@@ -49,7 +49,7 @@ namespace SimpleFeedReader
         /// The Date of the <see cref="FeedItem"/>.
         /// </summary>
         [Obsolete("Split into PublishDate and LastUpdatedDate")]
-        public DateTimeOffset Date { get { return new[] { this.PublishDate, this.LastUpdatedDate }.Max(); } }
+        public DateTimeOffset Date { get { return new[] { PublishDate, LastUpdatedDate }.Max(); } }
 
         /// <summary>
         /// The publication date of the <see cref="FeedItem"/>.
@@ -66,8 +66,8 @@ namespace SimpleFeedReader
         /// </summary>
         public FeedItem()
         {
-            this.Images = new List<Uri>();
-            this.Categories = new List<string>();
+            Images = new List<Uri>();
+            Categories = new List<string>();
         }
 
         /// <summary>
@@ -78,14 +78,14 @@ namespace SimpleFeedReader
         public FeedItem(FeedItem item)
             : this()
         {
-            this.Title = item.Title;
-            this.Content = item.Content;
-            this.Summary = item.Summary;
-            this.Uri = item.Uri;
-            this.PublishDate = item.PublishDate;
-            this.LastUpdatedDate = item.LastUpdatedDate;
-            this.Images = item.Images;
-            this.Categories = item.Categories;
+            Title = item.Title;
+            Content = item.Content;
+            Summary = item.Summary;
+            Uri = item.Uri;
+            PublishDate = item.PublishDate;
+            LastUpdatedDate = item.LastUpdatedDate;
+            Images = item.Images;
+            Categories = item.Categories;
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace SimpleFeedReader
         /// <remarks>This method is intended as conveinience-method.</remarks>
         public string GetContent()
         {
-            return !string.IsNullOrEmpty(this.Content) ? this.Content : this.Summary;
+            return !string.IsNullOrEmpty(Content) ? Content : Summary;
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace SimpleFeedReader
         /// <remarks>This method is intended as conveinience-method.</remarks>
         public string GetSummary()
         {
-            return !string.IsNullOrEmpty(this.Summary) ? this.Summary : this.Content;
+            return !string.IsNullOrEmpty(Summary) ? Summary : Content;
         }
     }
 }

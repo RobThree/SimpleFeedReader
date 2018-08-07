@@ -1,1 +1,1 @@
-.nuget\nuget pack SimpleFeedReader.nuspec
+nuget pack SimpleFeedReader.nuspec

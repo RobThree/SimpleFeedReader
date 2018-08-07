@@ -175,3 +175,5 @@ FakesAssemblies/
 
 # Documentation
 *.chm
+
+.vs/
