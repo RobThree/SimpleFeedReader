@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SimpleFeedReader;
 using System.ServiceModel.Syndication;
 using System.IO;
 using System.Net;
 using System.Xml;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SimpleFeedReader;
 
 namespace SimpleFeedReaderTests
 {
