@@ -17,14 +17,19 @@
     <PackageTags>rss atom syndication feed</PackageTags>
     <PackageReleaseNotes>* Added netcore support</PackageReleaseNotes>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>icon.png</PackageIcon>
     <Copyright>(c) 2014 - 2020 Devcorner.nl</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net4|AnyCPU'">
+    <OutputPath></OutputPath>
+    <DocumentationFile>bin\Release\SimpleFeedReader.xml</DocumentationFile>
   </PropertyGroup>
 
 
   <ItemGroup>
-    <None Include="..\LICENSE" Pack="true" PackagePath="" />
     <None Include="..\Gfx\icon.png" Pack="true" PackagePath="" />
   </ItemGroup> 
   

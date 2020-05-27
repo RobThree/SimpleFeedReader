@@ -9,12 +9,7 @@ var reader = new FeedReader();
 var items = reader.RetrieveFeed("http://www.nytimes.com/services/xml/rss/nyt/International.xml");
 
 foreach (var i in items)
-{
-    Console.WriteLine(string.Format("{0}\t{1}",
-            i.Date.ToString("g"),
-            i.Title
-    ));
-}
+    Console.WriteLine($"{i.Date.ToString("g")}\t{i.Title}");
 ````
 Output:
 
