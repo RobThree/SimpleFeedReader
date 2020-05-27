@@ -1,35 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard20</TargetFrameworks>
+    <TargetFrameworks>net4;netstandard20</TargetFrameworks>
     <AssemblyVersion>1.0.9.0</AssemblyVersion>
     <FileVersion>1.0.9.0</FileVersion>
     <Version>1.0.9.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>RobIII</Authors>
-    <Description>Provides classes and methods for consuming syndication feeds.</Description>
+    <Description>Easy to use, simple, Syndication feed reader (Atom / RSS).</Description>
+    <Summary>Provides classes and methods for consuming syndication feeds.</Summary>
     <PackageId>SimpleFeedReader</PackageId>
     <AssemblyName>SimpleFeedReader</AssemblyName>
     <RootNamespace>SimpleFeedReader</RootNamespace>
     <PackageProjectUrl>https://github.com/RobThree/SimpleFeedReader</PackageProjectUrl>
     <RepositoryUrl>https://github.com/RobThree/SimpleFeedReader</RepositoryUrl>
     <PackageTags>rss atom syndication feed</PackageTags>
-    <PackageReleaseNotes>netcore support</PackageReleaseNotes>
+    <PackageReleaseNotes>* Added netcore support</PackageReleaseNotes>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>icon.png</PackageIcon>
+    <Copyright>(c) 2014 - 2020 Devcorner.nl</Copyright>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.ServiceModel.Syndication" Version="4.7.0" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\LICENSE" Pack="true" PackagePath="" />
-  </ItemGroup> 
-
-  <ItemGroup>
     <None Include="..\Gfx\icon.png" Pack="true" PackagePath="" />
-  </ItemGroup>  
+  </ItemGroup> 
+  
+  <ItemGroup>
+    <PackageReference Include="System.ServiceModel.Syndication" Version="4.7.0" Condition="'$(TargetFramework)' == 'netstandard20'" />
+    <Reference Include="System.ServiceModel" Condition="'$(TargetFramework)' == 'net4'" />
+  </ItemGroup> 
 
 </Project>
