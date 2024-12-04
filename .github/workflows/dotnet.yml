@@ -1,0 +1,35 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET Build and test
+
+on:
+  push:
+    branches: [ "trunk" ]
+  pull_request:
+    branches: [ "trunk" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: Firenza/secrets-to-env@v1.3.0
+      name: Set secrets as environment variables
+      with:
+        secrets: ${{ toJSON(secrets) }}
+        secret_filter_regex: ENV_*
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore src
+    - name: Build
+      run: dotnet build src --no-restore
+    - name: Test
+      run: dotnet test src --no-build --verbosity normal
+    - name: Publish
+      run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.PACKAGE_N2 }} --source https://api.nuget.org/v3/index.json
