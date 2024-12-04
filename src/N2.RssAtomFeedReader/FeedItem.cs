@@ -10,51 +10,6 @@ namespace N2.RssAtomFeedReader
     public class FeedItem
     {
         /// <summary>
-        /// The Id of the <see cref="FeedItem"/>.
-        /// </summary>
-        public string Id { get; set; }
-
-        /// <summary>
-        /// The Title of the <see cref="FeedItem"/>.
-        /// </summary>
-        public string Title { get; set; }
-
-        /// <summary>
-        /// The Content of the <see cref="FeedItem"/>.
-        /// </summary>
-        public string Content { get; set; }
-
-        /// <summary>
-        /// The Summary of the <see cref="FeedItem"/>.
-        /// </summary>
-        public string Summary { get; set; }
-
-        /// <summary>
-        /// The Uri of the <see cref="FeedItem"/>.
-        /// </summary>
-        public Uri Uri { get; set; }
-
-        /// <summary>
-        /// The images of the <see cref="FeedItem"/>.
-        /// </summary>
-        public IEnumerable<Uri> Images { get; set; }
-
-        /// <summary>
-        /// The vategories of the <see cref="FeedItem"/>.
-        /// </summary>
-        public IEnumerable<string> Categories { get; set; }
-
-        /// <summary>
-        /// The publication date of the <see cref="FeedItem"/>.
-        /// </summary>
-        public DateTimeOffset PublishDate { get; set; }
-
-        /// <summary>
-        /// The date when the feeditem was last updated <see cref="FeedItem"/>.
-        /// </summary>
-        public DateTimeOffset LastUpdatedDate { get; set; }
-
-        /// <summary>
         /// Initializes a new <see cref="FeedItem"/>.
         /// </summary>
         public FeedItem()
@@ -82,11 +37,54 @@ namespace N2.RssAtomFeedReader
         }
 
         /// <summary>
+        /// The vategories of the <see cref="FeedItem"/>.
+        /// </summary>
+        public IEnumerable<string> Categories { get; set; }
+
+        /// <summary>
+        /// The Content of the <see cref="FeedItem"/>.
+        /// </summary>
+        public string? Content { get; set; }
+
+        /// <summary>
+        /// The Id of the <see cref="FeedItem"/>.
+        /// </summary>
+        public string? Id { get; set; }
+
+        /// <summary>
+        /// The images of the <see cref="FeedItem"/>.
+        /// </summary>
+        public IEnumerable<Uri> Images { get; set; }
+
+        /// <summary>
+        /// The date when the feeditem was last updated <see cref="FeedItem"/>.
+        /// </summary>
+        public DateTimeOffset LastUpdatedDate { get; set; }
+
+        /// <summary>
+        /// The publication date of the <see cref="FeedItem"/>.
+        /// </summary>
+        public DateTimeOffset PublishDate { get; set; }
+
+        /// <summary>
+        /// The Summary of the <see cref="FeedItem"/>.
+        /// </summary>
+        public string? Summary { get; set; }
+
+        /// <summary>
+        /// The Title of the <see cref="FeedItem"/>.
+        /// </summary>
+        public string? Title { get; set; }
+        /// <summary>
+        /// The Uri of the <see cref="FeedItem"/>.
+        /// </summary>
+        public Uri? Uri { get; set; }
+        /// <summary>
         /// Returns content, if any, otherwise returns the summary as content.
         /// </summary>
         /// <returns>Returns content, if any, otherwise returns the summary as content.</returns>
         /// <remarks>This method is intended as conveinience-method.</remarks>
-        public string GetContent()
+        public string? GetContent()
         {
             return !string.IsNullOrEmpty(Content) ? Content : Summary;
         }
@@ -96,7 +94,7 @@ namespace N2.RssAtomFeedReader
         /// </summary>
         /// <returns>Returns the summary, if any, otherwise returns the content as the summary.</returns>
         /// <remarks>This method is intended as conveinience-method.</remarks>
-        public string GetSummary()
+        public string? GetSummary()
         {
             return !string.IsNullOrEmpty(Summary) ? Summary : Content;
         }

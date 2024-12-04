@@ -8,13 +8,33 @@ namespace N2.RssAtomFeedReader
     /// <summary>
     /// Retrieves <see cref="SyndicationFeed"/>s and normalizes the items from the feed into <see cref="FeedItem"/>s.
     /// </summary>
-    public class FeedReader
+    public class FeedReader : IFeedReader
     {
+        /// <summary>
+        /// The default feeds for the <see cref="FeedReader"/>.
+        /// </summary>
+        private readonly Dictionary<string, string> feeds = [];
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FeedReader"/> class.
         /// </summary>
         public FeedReader()
             : this(new DefaultFeedItemNormalizer()) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FeedReader"/> class.
+        /// </summary>
+        /// <param name="options">Initialization options.</param>
+        public FeedReader(FeedReaderOptions options)
+        {
+            DefaultNormalizer = options.DefaultNormalizer;
+            ThrowOnError = options.ThrowOnError;
+            feeds.Clear();
+            foreach (var feed in options.Feeds)
+            {
+                feeds.Add(feed.Key, feed.Value);
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FeedReader"/> class.
@@ -62,6 +82,7 @@ namespace N2.RssAtomFeedReader
         /// errors.
         /// </summary>
         public bool ThrowOnError { get; private set; }
+
         /// <summary>
         /// Retrieves the specified feed.
         /// </summary>
@@ -71,6 +92,10 @@ namespace N2.RssAtomFeedReader
         /// </returns>
         public IEnumerable<FeedItem> RetrieveFeed(string uri)
         {
+            if (feeds.TryGetValue(uri, out var value))
+            {
+                return RetrieveFeed(value, DefaultNormalizer);
+            }
             return RetrieveFeed(uri, DefaultNormalizer);
         }
 
@@ -88,7 +113,8 @@ namespace N2.RssAtomFeedReader
         {
             try
             {
-                return RetrieveFeed(XmlReader.Create(uri), normalizer);
+                using var reader = XmlReader.Create(uri);
+                return RetrieveFeed(reader, normalizer);
             }
             catch
             {
@@ -123,9 +149,14 @@ namespace N2.RssAtomFeedReader
         public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader, IFeedItemNormalizer normalizer)
         {
             if (xmlReader == null)
+            {
                 throw new ArgumentNullException(nameof(xmlReader));
+            }
+
             if (normalizer == null)
+            {
                 throw new ArgumentNullException(nameof(normalizer));
+            }
 
             var items = new List<FeedItem>();
             try

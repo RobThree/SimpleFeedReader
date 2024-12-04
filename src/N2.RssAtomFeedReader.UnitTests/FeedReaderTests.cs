@@ -20,7 +20,7 @@ namespace SimpleFeedReaderTests
 
             Assert.AreEqual("http://example.org/foo/bar/1", items[0].Uri.ToString());
             Assert.AreEqual("Title 1", items[0].Title);
-            Assert.IsTrue(items[0].Summary.StartsWith("Lorem ipsum dolor sit"));
+            Assert.IsTrue(items[0].Summary!.StartsWith("Lorem ipsum dolor sit"));
             Assert.IsNull(items[0].Content);
             Assert.AreEqual("tag:example.org,1999:blog-123456789123456789123456789.post-987564321987654231", items[0].Id);
             Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].PublishDate);
@@ -34,8 +34,8 @@ namespace SimpleFeedReaderTests
             Assert.AreEqual(DateTimeOffset.MinValue, items[1].PublishDate);
             Assert.AreEqual(DateTimeOffset.MinValue, items[1].LastUpdatedDate);
 
-            Assert.IsTrue(items[0].GetContent().StartsWith("Lorem ipsum dolor sit"));
-            Assert.IsTrue(items[0].GetSummary().StartsWith("Lorem ipsum dolor sit"));
+            Assert.IsTrue(items[0].GetContent()!.StartsWith("Lorem ipsum dolor sit"));
+            Assert.IsTrue(items[0].GetSummary()!.StartsWith("Lorem ipsum dolor sit"));
         }
 
         [TestMethod]
@@ -48,7 +48,7 @@ namespace SimpleFeedReaderTests
 
             Assert.AreEqual("http://example.org/foo/bar/1", items[0].Uri.ToString());
             Assert.AreEqual("Title 1", items[0].Title);
-            Assert.IsTrue(items[0].Summary.StartsWith("Lorem ipsum dolor sit"));
+            Assert.IsTrue(items[0].Summary!.StartsWith("Lorem ipsum dolor sit"));
             Assert.IsNull(items[0].Content);
             Assert.AreEqual("tag:example.org,1999:blog-123456789123456789123456789.post-987564321987654231", items[0].Id);
             Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].PublishDate);
@@ -62,8 +62,8 @@ namespace SimpleFeedReaderTests
             Assert.AreEqual(DateTimeOffset.MinValue, items[1].PublishDate);
             Assert.AreEqual(DateTimeOffset.MinValue, items[1].LastUpdatedDate);
 
-            Assert.IsTrue(items[0].GetContent().StartsWith("Lorem ipsum dolor sit"));
-            Assert.IsTrue(items[0].GetSummary().StartsWith("Lorem ipsum dolor sit"));
+            Assert.IsTrue(items[0].GetContent()!.StartsWith("Lorem ipsum dolor sit"));
+            Assert.IsTrue(items[0].GetSummary()!.StartsWith("Lorem ipsum dolor sit"));
 
             Assert.IsTrue(items[0].Images.Count() == 2);
             Assert.AreEqual(items[0].Images.ElementAt(0).ToString(), "http://example.org/foo/bar/123abc.png");
@@ -192,11 +192,11 @@ namespace SimpleFeedReaderTests
             var items = target.RetrieveFeed(@"TestFeeds/google_snapshot.rss").ToArray();
 
             Assert.AreEqual(10, items.Length);
-            Assert.IsTrue(items[0].GetContent().StartsWith("(CNN) -- Rescue boats"));
-            Assert.IsTrue(items[1].GetContent().StartsWith("Pro-Russian troops guard"));
-            Assert.IsTrue(items[2].GetContent().StartsWith("(CNN) -- Former New York"));
-            Assert.IsTrue(items[3].GetContent().StartsWith("Two blasts near the"));
-            Assert.IsTrue(items[4].GetContent().StartsWith("A three-year-old boy"));
+            Assert.IsTrue(items[0].GetContent()!.StartsWith("(CNN) -- Rescue boats"));
+            Assert.IsTrue(items[1].GetContent()!.StartsWith("Pro-Russian troops guard"));
+            Assert.IsTrue(items[2].GetContent()!.StartsWith("(CNN) -- Former New York"));
+            Assert.IsTrue(items[3].GetContent()!.StartsWith("Two blasts near the"));
+            Assert.IsTrue(items[4].GetContent()!.StartsWith("A three-year-old boy"));
         }
 
         [TestMethod]
@@ -206,11 +206,11 @@ namespace SimpleFeedReaderTests
             var items = target.RetrieveFeed(@"TestFeeds/google_snapshot.atom").ToArray();
 
             Assert.AreEqual(10, items.Length);
-            Assert.IsTrue(items[0].GetContent().StartsWith("(CNN) -- Rescue boats"));
-            Assert.IsTrue(items[1].GetContent().StartsWith("Pro-Russian troops guard"));
-            Assert.IsTrue(items[2].GetContent().StartsWith("(CNN) -- Former New York"));
-            Assert.IsTrue(items[3].GetContent().StartsWith("Two blasts near the"));
-            Assert.IsTrue(items[4].GetContent().StartsWith("A three-year-old boy"));
+            Assert.IsTrue(items[0].GetContent()!.StartsWith("(CNN) -- Rescue boats"));
+            Assert.IsTrue(items[1].GetContent()!.StartsWith("Pro-Russian troops guard"));
+            Assert.IsTrue(items[2].GetContent()!.StartsWith("(CNN) -- Former New York"));
+            Assert.IsTrue(items[3].GetContent()!.StartsWith("Two blasts near the"));
+            Assert.IsTrue(items[4].GetContent()!.StartsWith("A three-year-old boy"));
         }
 
         [TestMethod]

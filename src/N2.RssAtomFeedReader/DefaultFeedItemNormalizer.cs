@@ -20,8 +20,8 @@ namespace N2.RssAtomFeedReader
     /// </remarks>
     public partial class DefaultFeedItemNormalizer : IFeedItemNormalizer
     {
-        private static readonly Regex htmlRegex = RegExXmlElement();    //@"<(.|\n)*?>"
         private static readonly Regex controlCodesRegex = RegExControlCodes();
+        private static readonly Regex htmlRegex = RegExXmlElement();    //@"<(.|\n)*?>"
         private static readonly Regex whiteSpaceRegex = RegExWhiteSpace();
 
         /// <summary>
@@ -32,16 +32,18 @@ namespace N2.RssAtomFeedReader
         /// <returns>Returns a normalized <see cref="FeedItem"/>.</returns>
         public virtual FeedItem Normalize(SyndicationFeed feed, SyndicationItem item)
         {
+            if(item==null) throw new ArgumentNullException(nameof(item));
+
             var alternatelink = item.Links.FirstOrDefault(l => l.RelationshipType == null || l.RelationshipType.Equals("alternate", StringComparison.OrdinalIgnoreCase));
 
-            Uri itemuri = null;
-            if (alternatelink == null && !Uri.TryCreate(item.Id, UriKind.Absolute, out Uri parsed))
+            Uri? itemuri = null;
+            if (alternatelink == null && !Uri.TryCreate(item.Id, UriKind.Absolute, out Uri? parsed))
             {
                 itemuri = parsed;
             }
             else
             {
-                itemuri = alternatelink.GetAbsoluteUri();
+                itemuri = alternatelink?.GetAbsoluteUri();
             }
 
             return new FeedItem
@@ -65,13 +67,29 @@ namespace N2.RssAtomFeedReader
                 .Select(p => new Uri(p.GetObject<XElement>().Value));
         }
 
-        private static string Normalize(string value)
+        private static string? HtmlDecode(string value, int threshold = 5)
+        {
+            int c = 0;
+            string newvalue = WebUtility.HtmlDecode(value);
+            while (!newvalue.Equals(value) && c < threshold)    //Keep decoding (if a string is double/triple/... encoded; we want the original)
+            {
+                c++;
+                value = newvalue;
+                newvalue = WebUtility.HtmlDecode(value);
+            }
+            if (c >= threshold) //Decoding threshold exceeded?
+                return null;
+
+            return newvalue;
+        }
+
+        private static string? Normalize(string? value)
         {
             if (!string.IsNullOrEmpty(value))
             {
                 value = HtmlDecode(value);
                 if (string.IsNullOrEmpty(value))
-                    return value;
+                    return default;
 
                 value = StripHTML(value);
                 value = StripDoubleOrMoreWhiteSpace(RemoveControlChars(value));
@@ -94,23 +112,6 @@ namespace N2.RssAtomFeedReader
         {
             return htmlRegex.Replace(value, " ");
         }
-
-        private static string HtmlDecode(string value, int threshold = 5)
-        {
-            int c = 0;
-            string newvalue = WebUtility.HtmlDecode(value);
-            while (!newvalue.Equals(value) && c < threshold)    //Keep decoding (if a string is double/triple/... encoded; we want the original)
-            {
-                c++;
-                value = newvalue;
-                newvalue = WebUtility.HtmlDecode(value);
-            }
-            if (c >= threshold) //Decoding threshold exceeded?
-                return null;
-
-            return newvalue;
-        }
-
 #if NETSTANDARD
         private static Regex RegExXmlElement()
         {
@@ -124,14 +125,15 @@ namespace N2.RssAtomFeedReader
         {
             return new Regex(@"\s{2,}", RegexOptions.Compiled);
         }
-
 #else
-        [GeneratedRegex(@"<[^>]*>", RegexOptions.Compiled)]
-        private static partial Regex RegExXmlElement();
         [GeneratedRegex(@"[\x00-\x1F\x7f]", RegexOptions.Compiled)]
         private static partial Regex RegExControlCodes();
+
         [GeneratedRegex(@"\s{2,}", RegexOptions.Compiled)]
         private static partial Regex RegExWhiteSpace();
+
+        [GeneratedRegex(@"<[^>]*>", RegexOptions.Compiled)]
+        private static partial Regex RegExXmlElement();
 #endif
 
     }

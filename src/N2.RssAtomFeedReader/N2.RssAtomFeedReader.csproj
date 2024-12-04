@@ -5,12 +5,13 @@
     <LangVersion>12.0</LangVersion>
     <FileVersion>8.0.9.0</FileVersion>
     <Version>8.0.9.0</Version>
+    <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Easy to use, simple, Syndication feed reader (Atom / RSS).</Description>
     <Summary>Provides classes and methods for consuming syndication feeds.</Summary>
     <PackageId>N2.FeedReader</PackageId>
-    <AssemblyName>N2.FeedReader</AssemblyName>
-    <RootNamespace>N2.FeedReader</RootNamespace>
+    <AssemblyName>N2.RssAtomFeedReader</AssemblyName>
+    <RootNamespace>N2.RssAtomFeedReader</RootNamespace>
     <PackageTags>rss atom syndication feed</PackageTags>
     <PackageReleaseNotes>* Forked from SimpleFeedReader</PackageReleaseNotes>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -30,7 +31,8 @@
   </ItemGroup> 
   
   <ItemGroup>
-    <PackageReference Include="System.ServiceModel.Syndication" Version="9.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="9.0.0" />
   </ItemGroup> 
 
 </Project>
