@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;NetStandard2.1</TargetFrameworks>
+    <LangVersion>12.0</LangVersion>
+    <FileVersion>8.0.9.0</FileVersion>
+    <Version>8.0.9.0</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Easy to use, simple, Syndication feed reader (Atom / RSS).</Description>
+    <Summary>Provides classes and methods for consuming syndication feeds.</Summary>
+    <PackageId>N2.FeedReader</PackageId>
+    <AssemblyName>N2.FeedReader</AssemblyName>
+    <RootNamespace>N2.FeedReader</RootNamespace>
+    <PackageTags>rss atom syndication feed</PackageTags>
+    <PackageReleaseNotes>* Forked from SimpleFeedReader</PackageReleaseNotes>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net4|AnyCPU'">
+    <OutputPath></OutputPath>
+    <DocumentationFile>bin\Release\SimpleFeedReader.xml</DocumentationFile>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <None Include="..\Gfx\icon.png" Pack="true" PackagePath="" />
+  </ItemGroup> 
+  
+  <ItemGroup>
+    <PackageReference Include="System.ServiceModel.Syndication" Version="9.0.0"/>
+  </ItemGroup> 
+
+</Project>
