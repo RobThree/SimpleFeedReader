@@ -14,7 +14,7 @@ namespace SimpleFeedReaderTests
         public void BasicRSSFeedTest()
         {
             var target = new FeedReader(true);
-            var items = target.RetrieveFeed(@"TestFeeds\basic.rss").ToArray();
+            var items = target.RetrieveFeed(@"TestFeeds/basic.rss").ToArray();
 
             Assert.AreEqual(2, items.Length);
 
@@ -42,7 +42,7 @@ namespace SimpleFeedReaderTests
         public void BasicRSSWithImageFeedTest()
         {
             var target = new FeedReader(true);
-            var items = target.RetrieveFeed(@"TestFeeds\basic_image.rss").ToArray();
+            var items = target.RetrieveFeed(@"TestFeeds/basic_image.rss").ToArray();
 
             Assert.AreEqual(2, items.Length);
 
@@ -75,7 +75,7 @@ namespace SimpleFeedReaderTests
         public void ThrowsWhenRequiredFeedTest1()
         {
             var target = new FeedReader(true);
-            _ = target.RetrieveFeed(@"TestFeeds\non_existing.rss");
+            _ = target.RetrieveFeed(@"TestFeeds/non_existing.rss");
         }
 
         //https://feeds.nos.nl/nosnieuwsalgemeen
@@ -111,14 +111,14 @@ namespace SimpleFeedReaderTests
         public void SuppressesExceptionsWhenRequiredFeedTest()
         {
             var target = new FeedReader(false);
-            _ = target.RetrieveFeed(@"TestFeeds\non_existing.rss");
+            _ = target.RetrieveFeed(@"TestFeeds/non_existing.rss");
         }
 
         [TestMethod]
         public void DefaultNormalizationTest()
         {
             var target = new FeedReader(true);
-            var items = target.RetrieveFeed(@"TestFeeds\decoding.rss").ToArray();
+            var items = target.RetrieveFeed(@"TestFeeds/decoding.rss").ToArray();
 
             var i0 = items[0];
             Assert.IsNull(i0.Summary);
@@ -136,7 +136,7 @@ namespace SimpleFeedReaderTests
         public void ExtendedNormalizerRSSFeedTest()
         {
             var target = new FeedReader(new ExtendedFeedItemNormalizer(), true);
-            var items = target.RetrieveFeed(@"TestFeeds\basic.rss").ToArray();
+            var items = target.RetrieveFeed(@"TestFeeds/basic.rss").ToArray();
 
             Assert.IsInstanceOfType(items[0], typeof(ExtendedFeedItem));
             Assert.AreEqual(1, ((ExtendedFeedItem)items[0]).Authors.Length);
@@ -148,7 +148,7 @@ namespace SimpleFeedReaderTests
         public void DTDInjectionTest1()
         {
             var target = new FeedReader(true);  //We want to check the exception so don't suppress it
-            _ = target.RetrieveFeed(@"TestFeeds\xml_injection1.rss");
+            _ = target.RetrieveFeed(@"TestFeeds/xml_injection1.rss");
         }
 
         [TestMethod]
@@ -156,14 +156,14 @@ namespace SimpleFeedReaderTests
         public void DTDInjectionTest2()
         {
             var target = new FeedReader(true);  //We want to check the exception so don't suppress it
-            _ = target.RetrieveFeed(@"TestFeeds\xml_injection2.rss");
+            _ = target.RetrieveFeed(@"TestFeeds/xml_injection2.rss");
         }
 
         [TestMethod]
         public void BasicAtomFeedTest()
         {
             var target = new FeedReader(true);
-            var items = target.RetrieveFeed(@"TestFeeds\basic.atom").ToArray();
+            var items = target.RetrieveFeed(@"TestFeeds/basic.atom").ToArray();
 
             Assert.AreEqual(2, items.Length);
 
@@ -189,7 +189,7 @@ namespace SimpleFeedReaderTests
         public void BasicActualRSSFeedTest()
         {
             var target = new FeedReader(new GoogleFeedItemNormalizer(), true);
-            var items = target.RetrieveFeed(@"TestFeeds\google_snapshot.rss").ToArray();
+            var items = target.RetrieveFeed(@"TestFeeds/google_snapshot.rss").ToArray();
 
             Assert.AreEqual(10, items.Length);
             Assert.IsTrue(items[0].GetContent().StartsWith("(CNN) -- Rescue boats"));
@@ -203,7 +203,7 @@ namespace SimpleFeedReaderTests
         public void BasicActualAtomFeedTest()
         {
             var target = new FeedReader(new GoogleFeedItemNormalizer(), true);
-            var items = target.RetrieveFeed(@"TestFeeds\google_snapshot.atom").ToArray();
+            var items = target.RetrieveFeed(@"TestFeeds/google_snapshot.atom").ToArray();
 
             Assert.AreEqual(10, items.Length);
             Assert.IsTrue(items[0].GetContent().StartsWith("(CNN) -- Rescue boats"));
@@ -217,7 +217,7 @@ namespace SimpleFeedReaderTests
         public void BasicRSSCategoriesTest()
         {
             var target = new FeedReader();
-            var items = target.RetrieveFeed(@"TestFeeds\categories.rss").ToArray();
+            var items = target.RetrieveFeed(@"TestFeeds/categories.rss").ToArray();
             Assert.AreEqual(items[0].Categories.ElementAt(0), "NEWS");
             Assert.AreEqual(items[0].Categories.ElementAt(1), "TEST");
         }
@@ -226,7 +226,7 @@ namespace SimpleFeedReaderTests
         public void BasicAtomCategoriesTest()
         {
             var target = new FeedReader();
-            var items = target.RetrieveFeed(@"TestFeeds\categories.atom").ToArray();
+            var items = target.RetrieveFeed(@"TestFeeds/categories.atom").ToArray();
             Assert.AreEqual(items[0].Categories.ElementAt(0), "a");
             Assert.AreEqual(items[1].Categories.ElementAt(0), "b");
             Assert.AreEqual(items[1].Categories.ElementAt(1), "c");

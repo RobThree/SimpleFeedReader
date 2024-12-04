@@ -11,6 +11,52 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="TestFeeds\basic.atom" />
+    <None Remove="TestFeeds\basic.rss" />
+    <None Remove="TestFeeds\basic_image.rss" />
+    <None Remove="TestFeeds\categories.atom" />
+    <None Remove="TestFeeds\categories.rss" />
+    <None Remove="TestFeeds\decoding.rss" />
+    <None Remove="TestFeeds\google_snapshot.atom" />
+    <None Remove="TestFeeds\google_snapshot.rss" />
+    <None Remove="TestFeeds\xml_injection1.rss" />
+    <None Remove="TestFeeds\xml_injection2.rss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="TestFeeds\basic.atom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFeeds\basic.rss">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFeeds\basic_image.rss">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFeeds\categories.atom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFeeds\categories.rss">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFeeds\decoding.rss">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFeeds\google_snapshot.atom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFeeds\google_snapshot.rss">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFeeds\xml_injection1.rss">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestFeeds\xml_injection2.rss">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.6.4" />
     <PackageReference Include="MSTest.TestFramework" Version="3.6.4" />
@@ -19,39 +65,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\N2.RssAtomFeedReader\N2.RssAtomFeedReader.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="TestFeeds\basic.atom">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFeeds\basic.rss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFeeds\basic_image.rss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFeeds\categories.atom">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFeeds\categories.rss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFeeds\decoding.rss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFeeds\google_snapshot.atom">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFeeds\google_snapshot.rss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFeeds\xml_injection1.rss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TestFeeds\xml_injection2.rss">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 
