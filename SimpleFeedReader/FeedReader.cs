@@ -76,7 +76,7 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     /// </summary>
     /// <param name="options">Initialization options.</param>
     public FeedReader(FeedReaderOptions options)
-        : this(options.DefaultNormalizer, options.ThrowOnError) { }
+        : this(options.DefaultNormalizer, options.ThrowOnError, options.HttpClient) { }
 
 
     /// <inheritdoc/>
