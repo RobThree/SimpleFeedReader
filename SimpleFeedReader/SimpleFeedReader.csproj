@@ -16,7 +16,7 @@
 		<RootNamespace>SimpleFeedReader</RootNamespace>
 		<PackageProjectUrl>https://github.com/RobThree/SimpleFeedReader</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/RobThree/SimpleFeedReader</RepositoryUrl>
-		<PackageTags>rss atom syndication feed</PackageTags>
+		<PackageTags>rss;atom;syndication;feed;rss;atom</PackageTags>
 		<PackageReleaseNotes>* Added netcore support</PackageReleaseNotes>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<PackageIcon>icon.png</PackageIcon>
