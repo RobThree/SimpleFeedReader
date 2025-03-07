@@ -7,7 +7,6 @@
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<AnalysisLevel>latest</AnalysisLevel>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<IsPackable>false</IsPackable>
 		<Authors>RobIII</Authors>
 		<Description>Easy to use, simple, Syndication feed reader (Atom / RSS).</Description>
 		<Summary>Provides classes and methods for consuming syndication feeds.</Summary>
