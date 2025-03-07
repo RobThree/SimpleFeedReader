@@ -33,4 +33,4 @@ You can implement your own `IFeedItemNormalizer` (see the [UnitTest project](htt
 
 The project is aimed at easy, don't-make-me-think, retrieval of syndication feeds' entries. It is by no means intended as full-fledged feedreader. It is, however, easily extensible for your purposes (again, see the [UnitTest project](https://github.com/RobThree/SimpleFeedReader/tree/master/SimpleFeedReaderTests) for examples; the `ExtendedFeedItem` and `ExtendedFeedItemNormalizer` are nice concrete examples of this idea).
 
-[![Build status](https://ci.appveyor.com/api/projects/status/wy2swaddwhukotg8)](https://ci.appveyor.com/project/RobIII/simplefeedreader) <a href="https://www.nuget.org/packages/SimpleFeedReader/"><img src="http://img.shields.io/nuget/v/SimpleFeedReader.svg?style=flat-square" alt="NuGet version" height="18"></a>
+![Build Status](https://img.shields.io/github/actions/workflow/status/RobThree/SimpleFeedReader/test.yml?branch=master&style=flat-square) [![Nuget version](https://img.shields.io/nuget/v/SimpleFeedReader.svg?style=flat-square)](https://www.nuget.org/packages/SimpleFeedReader/)
