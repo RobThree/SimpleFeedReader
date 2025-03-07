@@ -17,9 +17,12 @@ namespace SimpleFeedReader;
 /// When true, the <see cref="FeedReader"/> will throw on errors, when false the <see cref="FeedReader"/> will 
 /// suppress exceptions and return empty results.
 /// </param>
-public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool throwOnError) : IFeedReader
+/// <param name="httpClient">
+/// When you want to use a custom <see cref="HttpClient"/> you can set it through here.
+/// </param>
+public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool throwOnError, HttpClient? httpClient = null) : IFeedReader
 {
-    private static readonly HttpClient _httpclient = new();
+    private readonly HttpClient _httpclient = httpClient ?? new();
 
     /// <summary>
     /// Gets the default FeedItemNormalizer the <see cref="FeedReader"/> will use when normalizing 
@@ -36,8 +39,11 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     /// <summary>
     /// Initializes a new instance of the <see cref="FeedReader"/> class.
     /// </summary>
-    public FeedReader()
-        : this(new DefaultFeedItemNormalizer()) { }
+    /// <param name="httpClient">
+    /// When you want to use a custom <see cref="HttpClient"/> you can set it through here.
+    /// </param>
+    public FeedReader(HttpClient? httpClient = null)
+        : this(new DefaultFeedItemNormalizer(), httpClient) { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FeedReader"/> class.
@@ -46,8 +52,11 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     /// When true, the <see cref="FeedReader"/> will throw on errors, when false the <see cref="FeedReader"/> will 
     /// suppress exceptions and return empty results.
     /// </param>
-    public FeedReader(bool throwOnError)
-        : this(new DefaultFeedItemNormalizer(), throwOnError) { }
+    /// <param name="httpClient">
+    /// When you want to use a custom <see cref="HttpClient"/> you can set it through here.
+    /// </param>
+    public FeedReader(bool throwOnError, HttpClient? httpClient = null)
+        : this(new DefaultFeedItemNormalizer(), throwOnError, httpClient) { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FeedReader"/> class.
@@ -55,8 +64,11 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     /// <param name="defaultFeedItemNormalizer">
     /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="SyndicationItem"/>s.
     /// </param>
-    public FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer)
-        : this(defaultFeedItemNormalizer, false) { }
+    /// <param name="httpClient">
+    /// When you want to use a custom <see cref="HttpClient"/> you can set it through here.
+    /// </param>
+    public FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, HttpClient? httpClient = null)
+        : this(defaultFeedItemNormalizer, false, httpClient) { }
 
     /// <inheritdoc/>
     public Task<IEnumerable<FeedItem>> RetrieveFeedsAsync(IEnumerable<string> uris, CancellationToken cancellationToken = default)
@@ -126,7 +138,7 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
         return Task.FromResult(Enumerable.Empty<FeedItem>());
     }
 
-    private static async Task<XmlReader> GetXmlReaderAsync(string uri, CancellationToken cancellationToken = default)
+    private async Task<XmlReader> GetXmlReaderAsync(string uri, CancellationToken cancellationToken = default)
     {
         if (Uri.IsWellFormedUriString(uri, UriKind.Absolute))
         {
