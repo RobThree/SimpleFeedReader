@@ -6,19 +6,29 @@ namespace SimpleFeedReader;
 /// <summary>
 /// Retrieves <see cref="SyndicationFeed"/>s and normalizes the items from the feed into <see cref="FeedItem"/>s.
 /// </summary>
-public class FeedReader
+/// <remarks>
+/// Initializes a new instance of the <see cref="FeedReader"/> class.
+/// </remarks>
+/// <param name="defaultFeedItemNormalizer">
+/// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="SyndicationItem"/>s.
+/// </param>
+/// <param name="throwOnError">
+/// When true, the <see cref="FeedReader"/> will throw on errors, when false the <see cref="FeedReader"/> will 
+/// suppress exceptions and return empty results.
+/// </param>
+public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool throwOnError)
 {
     /// <summary>
     /// Gets the default FeedItemNormalizer the <see cref="FeedReader"/> will use when normalizing 
     /// <see cref="SyndicationItem"/>s.
     /// </summary>
-    public IFeedItemNormalizer DefaultNormalizer { get; private set; }
+    public IFeedItemNormalizer DefaultNormalizer { get; private set; } = defaultFeedItemNormalizer ?? throw new ArgumentNullException(nameof(defaultFeedItemNormalizer));
 
     /// <summary>
     /// Gets wether the FeedReader will throw on exceptions or suppress exceptions and return empty results on
     /// errors.
     /// </summary>
-    public bool ThrowOnError { get; private set; }
+    public bool ThrowOnError { get; private set; } = throwOnError;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FeedReader"/> class.
@@ -44,22 +54,6 @@ public class FeedReader
     /// </param>
     public FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer)
         : this(defaultFeedItemNormalizer, false) { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FeedReader"/> class.
-    /// </summary>
-    /// <param name="defaultFeedItemNormalizer">
-    /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="SyndicationItem"/>s.
-    /// </param>
-    /// <param name="throwOnError">
-    /// When true, the <see cref="FeedReader"/> will throw on errors, when false the <see cref="FeedReader"/> will 
-    /// suppress exceptions and return empty results.
-    /// </param>
-    public FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool throwOnError)
-    {
-        DefaultNormalizer = defaultFeedItemNormalizer ?? throw new ArgumentNullException(nameof(defaultFeedItemNormalizer));
-        ThrowOnError = throwOnError;
-    }
 
     /// <summary>
     /// Retrieves the specified feeds.

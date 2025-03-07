@@ -18,9 +18,9 @@ public partial class FeedReaderTests
 
         Assert.AreEqual(2, items.Length);
 
-        Assert.AreEqual("http://example.org/foo/bar/1", items[0].Uri.ToString());
+        Assert.AreEqual("http://example.org/foo/bar/1", items[0].Uri?.ToString());
         Assert.AreEqual("Title 1", items[0].Title);
-        Assert.IsTrue(items[0].Summary.StartsWith("Lorem ipsum dolor sit"));
+        Assert.IsTrue(items[0].Summary?.StartsWith("Lorem ipsum dolor sit"));
         Assert.IsNull(items[0].Content);
         Assert.AreEqual("tag:example.org,1999:blog-123456789123456789123456789.post-987564321987654231", items[0].Id);
         Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].PublishDate);
@@ -34,8 +34,8 @@ public partial class FeedReaderTests
         Assert.AreEqual(DateTimeOffset.MinValue, items[1].PublishDate);
         Assert.AreEqual(DateTimeOffset.MinValue, items[1].LastUpdatedDate);
 
-        Assert.IsTrue(items[0].GetContent().StartsWith("Lorem ipsum dolor sit"));
-        Assert.IsTrue(items[0].GetSummary().StartsWith("Lorem ipsum dolor sit"));
+        Assert.IsTrue(items[0].GetContent()?.StartsWith("Lorem ipsum dolor sit"));
+        Assert.IsTrue(items[0].GetSummary()?.StartsWith("Lorem ipsum dolor sit"));
 
 #pragma warning disable 0618
         Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].Date);
@@ -51,9 +51,9 @@ public partial class FeedReaderTests
 
         Assert.AreEqual(2, items.Length);
 
-        Assert.AreEqual("http://example.org/foo/bar/1", items[0].Uri.ToString());
+        Assert.AreEqual("http://example.org/foo/bar/1", items[0].Uri?.ToString());
         Assert.AreEqual("Title 1", items[0].Title);
-        Assert.IsTrue(items[0].Summary.StartsWith("Lorem ipsum dolor sit"));
+        Assert.IsTrue(items[0].Summary?.StartsWith("Lorem ipsum dolor sit"));
         Assert.IsNull(items[0].Content);
         Assert.AreEqual("tag:example.org,1999:blog-123456789123456789123456789.post-987564321987654231", items[0].Id);
         Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].PublishDate);
@@ -67,17 +67,17 @@ public partial class FeedReaderTests
         Assert.AreEqual(DateTimeOffset.MinValue, items[1].PublishDate);
         Assert.AreEqual(DateTimeOffset.MinValue, items[1].LastUpdatedDate);
 
-        Assert.IsTrue(items[0].GetContent().StartsWith("Lorem ipsum dolor sit"));
-        Assert.IsTrue(items[0].GetSummary().StartsWith("Lorem ipsum dolor sit"));
+        Assert.IsTrue(items[0].GetContent()?.StartsWith("Lorem ipsum dolor sit"));
+        Assert.IsTrue(items[0].GetSummary()?.StartsWith("Lorem ipsum dolor sit"));
 
 #pragma warning disable 0618
         Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].Date);
         Assert.AreEqual(DateTimeOffset.MinValue, items[1].Date);
 #pragma warning restore 0618
 
-        Assert.AreEqual(2, items[0].Images.Count());
-        Assert.AreEqual("http://example.org/foo/bar/123abc.png", items[0].Images.ElementAt(0).ToString());
-        Assert.AreEqual("http://example.org/foo/bar/123abc_2.png", items[0].Images.ElementAt(1).ToString());
+        Assert.AreEqual(2, items[0]?.Images?.Count());
+        Assert.AreEqual("http://example.org/foo/bar/123abc.png", items[0].Images?.ElementAt(0).ToString());
+        Assert.AreEqual("http://example.org/foo/bar/123abc_2.png", items[0].Images?.ElementAt(1).ToString());
     }
 
     [TestMethod]
@@ -126,8 +126,8 @@ public partial class FeedReaderTests
         var items = target.RetrieveFeed(@"TestFeeds\basic.rss").ToArray();
 
         Assert.IsInstanceOfType<ExtendedFeedItem>(items[0]);
-        Assert.AreEqual(1, ((ExtendedFeedItem)items[0]).Authors.Length);
-        Assert.AreEqual("noreply1@example.org (John Doe 1)", ((ExtendedFeedItem)items[0]).Authors[0]);
+        Assert.AreEqual(1, ((ExtendedFeedItem)items[0]).Authors?.Length);
+        Assert.AreEqual("noreply1@example.org (John Doe 1)", ((ExtendedFeedItem)items[0]).Authors?[0]);
     }
 
     [TestMethod]
@@ -152,7 +152,7 @@ public partial class FeedReaderTests
 
         Assert.AreEqual(2, items.Length);
 
-        Assert.AreEqual("http://example.org/foo/bar/1", items[0].Uri.ToString());
+        Assert.AreEqual("http://example.org/foo/bar/1", items[0].Uri?.ToString());
         Assert.AreEqual("Summary1", items[0].Summary);
         Assert.AreEqual("Test1", items[0].Title);
         Assert.AreEqual("HTML content", items[0].Content);
@@ -161,7 +161,7 @@ public partial class FeedReaderTests
         Assert.AreEqual(DateTimeOffset.Parse("2013-03-13T13:37:31.0000000+00:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].PublishDate);
         Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+00:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].LastUpdatedDate);
 
-        Assert.AreEqual("http://example.org/foo/bar/2", items[1].Uri.ToString());
+        Assert.AreEqual("http://example.org/foo/bar/2", items[1].Uri?.ToString());
         Assert.AreEqual("Summary2", items[1].Summary);
         Assert.AreEqual("Test2", items[1].Title);
         Assert.AreEqual("Text content", items[1].Content);
@@ -182,11 +182,11 @@ public partial class FeedReaderTests
         var items = target.RetrieveFeed(@"TestFeeds\google_snapshot.rss").ToArray();
 
         Assert.AreEqual(10, items.Length);
-        Assert.IsTrue(items[0].GetContent().StartsWith("(CNN) -- Rescue boats"));
-        Assert.IsTrue(items[1].GetContent().StartsWith("Pro-Russian troops guard"));
-        Assert.IsTrue(items[2].GetContent().StartsWith("(CNN) -- Former New York"));
-        Assert.IsTrue(items[3].GetContent().StartsWith("Two blasts near the"));
-        Assert.IsTrue(items[4].GetContent().StartsWith("A three-year-old boy"));
+        Assert.IsTrue(items[0].GetContent()?.StartsWith("(CNN) -- Rescue boats"));
+        Assert.IsTrue(items[1].GetContent()?.StartsWith("Pro-Russian troops guard"));
+        Assert.IsTrue(items[2].GetContent()?.StartsWith("(CNN) -- Former New York"));
+        Assert.IsTrue(items[3].GetContent()?.StartsWith("Two blasts near the"));
+        Assert.IsTrue(items[4].GetContent()?.StartsWith("A three-year-old boy"));
     }
 
     [TestMethod]
@@ -196,11 +196,11 @@ public partial class FeedReaderTests
         var items = target.RetrieveFeed(@"TestFeeds\google_snapshot.atom").ToArray();
 
         Assert.AreEqual(10, items.Length);
-        Assert.IsTrue(items[0].GetContent().StartsWith("(CNN) -- Rescue boats"));
-        Assert.IsTrue(items[1].GetContent().StartsWith("Pro-Russian troops guard"));
-        Assert.IsTrue(items[2].GetContent().StartsWith("(CNN) -- Former New York"));
-        Assert.IsTrue(items[3].GetContent().StartsWith("Two blasts near the"));
-        Assert.IsTrue(items[4].GetContent().StartsWith("A three-year-old boy"));
+        Assert.IsTrue(items[0].GetContent()?.StartsWith("(CNN) -- Rescue boats"));
+        Assert.IsTrue(items[1].GetContent()?.StartsWith("Pro-Russian troops guard"));
+        Assert.IsTrue(items[2].GetContent()?.StartsWith("(CNN) -- Former New York"));
+        Assert.IsTrue(items[3].GetContent()?.StartsWith("Two blasts near the"));
+        Assert.IsTrue(items[4].GetContent()?.StartsWith("A three-year-old boy"));
     }
 
     [TestMethod]
@@ -208,8 +208,8 @@ public partial class FeedReaderTests
     {
         var target = new FeedReader();
         var items = target.RetrieveFeed(@"TestFeeds\categories.rss").ToArray();
-        Assert.AreEqual("NEWS", items[0].Categories.ElementAt(0));
-        Assert.AreEqual("TEST", items[0].Categories.ElementAt(1));
+        Assert.AreEqual("NEWS", items[0].Categories?.ElementAt(0));
+        Assert.AreEqual("TEST", items[0].Categories?.ElementAt(1));
     }
 
     [TestMethod]
@@ -217,15 +217,15 @@ public partial class FeedReaderTests
     {
         var target = new FeedReader();
         var items = target.RetrieveFeed(@"TestFeeds\categories.atom").ToArray();
-        Assert.AreEqual("a", items[0].Categories.ElementAt(0));
-        Assert.AreEqual("b", items[1].Categories.ElementAt(0));
-        Assert.AreEqual("c", items[1].Categories.ElementAt(1));
+        Assert.AreEqual("a", items[0].Categories?.ElementAt(0));
+        Assert.AreEqual("b", items[1].Categories?.ElementAt(0));
+        Assert.AreEqual("c", items[1].Categories?.ElementAt(1));
     }
 
     #region TestClasses
     private class ExtendedFeedItem : FeedItem
     {
-        public string[] Authors { get; set; }
+        public string[]? Authors { get; set; }
 
         public ExtendedFeedItem() { }
         public ExtendedFeedItem(FeedItem item)

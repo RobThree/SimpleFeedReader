@@ -31,7 +31,10 @@ public class DefaultFeedItemNormalizer : IFeedItemNormalizer
     {
         var alternatelink = item.Links.FirstOrDefault(l => l.RelationshipType == null || l.RelationshipType.Equals("alternate", StringComparison.OrdinalIgnoreCase));
 
-        var itemuri = alternatelink == null && !Uri.TryCreate(item.Id, UriKind.Absolute, out var parsed) ? parsed : alternatelink.GetAbsoluteUri();
+        var itemuri = alternatelink == null && !Uri.TryCreate(item.Id, UriKind.Absolute, out var parsed)
+            ? parsed
+            : alternatelink?.GetAbsoluteUri();
+
         return new FeedItem
         {
             Id = string.IsNullOrEmpty(item.Id) ? null : item.Id.Trim(),
@@ -50,7 +53,7 @@ public class DefaultFeedItemNormalizer : IFeedItemNormalizer
             .Where(p => p.OuterName.Equals("image"))
             .Select(p => new Uri(p.GetObject<XElement>().Value));
 
-    private static string Normalize(string value)
+    private static string? Normalize(string? value)
     {
         if (!string.IsNullOrEmpty(value))
         {
@@ -62,18 +65,18 @@ public class DefaultFeedItemNormalizer : IFeedItemNormalizer
 
             value = StripHTML(value);
             value = StripDoubleOrMoreWhiteSpace(RemoveControlChars(value));
-            value = value.Normalize().Trim();
+            value = value?.Normalize().Trim();
         }
         return value;
     }
 
-    private static string RemoveControlChars(string value) => _controlcodesregex.Replace(value, " ");
+    private static string? RemoveControlChars(string? value) => _controlcodesregex.Replace(value, " ");
 
-    private static string StripDoubleOrMoreWhiteSpace(string value) => _whitespaceregex.Replace(value, " ");
+    private static string? StripDoubleOrMoreWhiteSpace(string? value) => _whitespaceregex.Replace(value, " ");
 
-    private static string StripHTML(string value) => _htmlregex.Replace(value, " ");
+    private static string? StripHTML(string? value) => _htmlregex.Replace(value, " ");
 
-    private static string HtmlDecode(string value, int threshold = 5)
+    private static string? HtmlDecode(string? value, int threshold = 5)
     {
         var c = 0;
         var newvalue = WebUtility.HtmlDecode(value);
