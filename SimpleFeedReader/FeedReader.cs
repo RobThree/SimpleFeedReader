@@ -70,6 +70,15 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     public FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, HttpClient? httpClient = null)
         : this(defaultFeedItemNormalizer, false, httpClient) { }
 
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FeedReader"/> class.
+    /// </summary>
+    /// <param name="options">Initialization options.</param>
+    public FeedReader(FeedReaderOptions options)
+        : this(options.DefaultNormalizer, options.ThrowOnError) { }
+
+
     /// <inheritdoc/>
     public Task<IEnumerable<FeedItem>> RetrieveFeedsAsync(IEnumerable<string> uris, CancellationToken cancellationToken = default)
         => RetrieveFeedsAsync(uris, DefaultNormalizer, cancellationToken);
