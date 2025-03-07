@@ -9,8 +9,7 @@ namespace SimpleFeedReader;
 /// The <see cref="DefaultFeedItemNormalizer"/> normalizes <see cref="FeedItem.Title"/>, 
 /// <see cref="FeedItem.Content"/> and <see cref="FeedItem.Summary"/> of <see cref="FeedItem"/>s to the point where
 /// they no longer contain any HTML, redundant whitespace, un-normalized unicode chars and other control chars like
-/// tabs, newlines or backspaces. The <see cref="FeedItem"/>'s <see cref="FeedItem.Date"/> property will contain
-/// whichever date is latest; the <see cref="FeedItem.PublishDate"/> or <see cref="FeedItem.LastUpdatedDate"/>.
+/// tabs, newlines or backspaces.
 /// </summary>
 /// <remarks>
 /// You can implement a normalizer yourself by implementing the <see cref="IFeedItemNormalizer"/> interface.

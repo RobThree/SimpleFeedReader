@@ -11,10 +11,10 @@ namespace SimpleFeedReaderTests;
 public partial class FeedReaderTests
 {
     [TestMethod]
-    public void BasicRSSFeedTest()
+    public async Task BasicRSSFeedTest()
     {
         var target = new FeedReader(true);
-        var items = target.RetrieveFeed(@"TestFeeds\basic.rss").ToArray();
+        var items = (await target.RetrieveFeedAsync(@"TestFeeds\basic.rss")).ToArray();
 
         Assert.AreEqual(2, items.Length);
 
@@ -39,10 +39,10 @@ public partial class FeedReaderTests
     }
 
     [TestMethod]
-    public void BasicRSSWithImageFeedTest()
+    public async Task BasicRSSWithImageFeedTest()
     {
         var target = new FeedReader(true);
-        var items = target.RetrieveFeed(@"TestFeeds\basic_image.rss").ToArray();
+        var items = (await target.RetrieveFeedAsync(@"TestFeeds\basic_image.rss")).ToArray();
 
         Assert.AreEqual(2, items.Length);
 
@@ -70,31 +70,31 @@ public partial class FeedReaderTests
     }
 
     [TestMethod]
-    public void ThrowsWhenRequiredFeedTest1()
+    public async Task ThrowsWhenRequiredFeedTest1()
     {
         var target = new FeedReader(true);
-        Assert.ThrowsExactly<FileNotFoundException>(() => _ = target.RetrieveFeed(@"TestFeeds\non_existing.rss"));
+        await Assert.ThrowsExactlyAsync<FileNotFoundException>(() => _ = target.RetrieveFeedAsync(@"TestFeeds\non_existing.rss"));
     }
 
     [TestMethod]
-    public void ThrowsWhenRequiredFeedTest2()
+    public async Task ThrowsWhenRequiredFeedTest2()
     {
         var target = new FeedReader(true);
-        Assert.ThrowsExactly<HttpRequestException>(() => _ = target.RetrieveFeed(@"http://example.org/non_existing.rss"));
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() => _ = target.RetrieveFeedAsync(@"http://example.org/non_existing.rss"));
     }
 
     [TestMethod]
-    public void SuppressesExceptionsWhenRequiredFeedTest()
+    public async Task SuppressesExceptionsWhenRequiredFeedTest()
     {
         var target = new FeedReader(false);
-        _ = target.RetrieveFeed(@"TestFeeds\non_existing.rss");
+        _ = await target.RetrieveFeedAsync(@"TestFeeds\non_existing.rss");
     }
 
     [TestMethod]
-    public void DefaultNormalizationTest()
+    public async Task DefaultNormalizationTest()
     {
         var target = new FeedReader(true);
-        var items = target.RetrieveFeed(@"TestFeeds\decoding.rss").ToArray();
+        var items = (await target.RetrieveFeedAsync(@"TestFeeds\decoding.rss")).ToArray();
 
         var i0 = items[0];
         Assert.IsNull(i0.Summary);
@@ -109,10 +109,10 @@ public partial class FeedReaderTests
     }
 
     [TestMethod]
-    public void ExtendedNormalizerRSSFeedTest()
+    public async Task ExtendedNormalizerRSSFeedTest()
     {
         var target = new FeedReader(new ExtendedFeedItemNormalizer(), true);
-        var items = target.RetrieveFeed(@"TestFeeds\basic.rss").ToArray();
+        var items = (await target.RetrieveFeedAsync(@"TestFeeds\basic.rss")).ToArray();
 
         Assert.IsInstanceOfType<ExtendedFeedItem>(items[0]);
         Assert.AreEqual(1, ((ExtendedFeedItem)items[0]).Authors?.Length);
@@ -120,24 +120,24 @@ public partial class FeedReaderTests
     }
 
     [TestMethod]
-    public void DTDInjectionTest1()
+    public async Task DTDInjectionTest1()
     {
         var target = new FeedReader(true);  //We want to check the exception so don't suppress it
-        Assert.ThrowsExactly<XmlException>(() => _ = target.RetrieveFeed(@"TestFeeds\xml_injection1.rss"));
+        await Assert.ThrowsExactlyAsync<XmlException>(() => _ = target.RetrieveFeedAsync(@"TestFeeds\xml_injection1.rss"));
     }
 
     [TestMethod]
-    public void DTDInjectionTest2()
+    public async Task DTDInjectionTest2()
     {
         var target = new FeedReader(true);  //We want to check the exception so don't suppress it
-        Assert.ThrowsExactly<XmlException>(() => _ = target.RetrieveFeed(@"TestFeeds\xml_injection2.rss"));
+        await Assert.ThrowsExactlyAsync<XmlException>(() => _ = target.RetrieveFeedAsync(@"TestFeeds\xml_injection2.rss"));
     }
 
     [TestMethod]
-    public void BasicAtomFeedTest()
+    public async Task BasicAtomFeedTest()
     {
         var target = new FeedReader(true);
-        var items = target.RetrieveFeed(@"TestFeeds\basic.atom").ToArray();
+        var items = (await target.RetrieveFeedAsync(@"TestFeeds\basic.atom")).ToArray();
 
         Assert.AreEqual(2, items.Length);
 
@@ -160,10 +160,10 @@ public partial class FeedReaderTests
     }
 
     [TestMethod]
-    public void BasicActualRSSFeedTest()
+    public async Task BasicActualRSSFeedTest()
     {
         var target = new FeedReader(new GoogleFeedItemNormalizer(), true);
-        var items = target.RetrieveFeed(@"TestFeeds\google_snapshot.rss").ToArray();
+        var items = (await target.RetrieveFeedAsync(@"TestFeeds\google_snapshot.rss")).ToArray();
 
         Assert.AreEqual(10, items.Length);
         Assert.IsTrue(items[0].GetContent()?.StartsWith("(CNN) -- Rescue boats"));
@@ -174,10 +174,10 @@ public partial class FeedReaderTests
     }
 
     [TestMethod]
-    public void BasicActualAtomFeedTest()
+    public async Task BasicActualAtomFeedTest()
     {
         var target = new FeedReader(new GoogleFeedItemNormalizer(), true);
-        var items = target.RetrieveFeed(@"TestFeeds\google_snapshot.atom").ToArray();
+        var items = (await target.RetrieveFeedAsync(@"TestFeeds\google_snapshot.atom")).ToArray();
 
         Assert.AreEqual(10, items.Length);
         Assert.IsTrue(items[0].GetContent()?.StartsWith("(CNN) -- Rescue boats"));
@@ -188,19 +188,19 @@ public partial class FeedReaderTests
     }
 
     [TestMethod]
-    public void BasicRSSCategoriesTest()
+    public async Task BasicRSSCategoriesTest()
     {
         var target = new FeedReader();
-        var items = target.RetrieveFeed(@"TestFeeds\categories.rss").ToArray();
+        var items = (await target.RetrieveFeedAsync(@"TestFeeds\categories.rss")).ToArray();
         Assert.AreEqual("NEWS", items[0].Categories?.ElementAt(0));
         Assert.AreEqual("TEST", items[0].Categories?.ElementAt(1));
     }
 
     [TestMethod]
-    public void BasicAtomCategoriesTest()
+    public async Task BasicAtomCategoriesTest()
     {
         var target = new FeedReader();
-        var items = target.RetrieveFeed(@"TestFeeds\categories.atom").ToArray();
+        var items = (await target.RetrieveFeedAsync(@"TestFeeds\categories.atom")).ToArray();
         Assert.AreEqual("a", items[0].Categories?.ElementAt(0));
         Assert.AreEqual("b", items[1].Categories?.ElementAt(0));
         Assert.AreEqual("c", items[1].Categories?.ElementAt(1));

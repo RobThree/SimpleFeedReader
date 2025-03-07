@@ -1,4 +1,5 @@
-﻿using System.ServiceModel.Syndication;
+﻿using System.Net.Http;
+using System.ServiceModel.Syndication;
 using System.Xml;
 
 namespace SimpleFeedReader;
@@ -18,6 +19,8 @@ namespace SimpleFeedReader;
 /// </param>
 public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool throwOnError)
 {
+    private static readonly HttpClient _httpclient = new();
+
     /// <summary>
     /// Gets the default FeedItemNormalizer the <see cref="FeedReader"/> will use when normalizing 
     /// <see cref="SyndicationItem"/>s.
@@ -60,10 +63,11 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     /// </summary>
     /// <param name="uris">The uri's of the feeds to retrieve.</param>
     /// <returns>
-    /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+    /// Returns a task that resolves to an <see cref="IEnumerable{FeedItem}"/> of retrieved <see cref="FeedItem"/>s.
     /// </returns>
     /// <remarks>This is a convenience method.</remarks>
-    public IEnumerable<FeedItem> RetrieveFeeds(IEnumerable<string> uris) => RetrieveFeeds(uris, DefaultNormalizer);
+    public Task<IEnumerable<FeedItem>> RetrieveFeedsAsync(IEnumerable<string> uris)
+        => RetrieveFeedsAsync(uris, DefaultNormalizer);
 
     /// <summary>
     /// Retrieves the specified feeds.
@@ -73,18 +77,15 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
     /// </param>
     /// <returns>
-    /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+    /// Returns a task that resolves to an <see cref="IEnumerable{FeedItem}"/> of retrieved <see cref="FeedItem"/>s.
     /// </returns>
     /// <remarks>This is a convenience method.</remarks>
-    public IEnumerable<FeedItem> RetrieveFeeds(IEnumerable<string> uris, IFeedItemNormalizer normalizer)
+    public async Task<IEnumerable<FeedItem>> RetrieveFeedsAsync(IEnumerable<string> uris, IFeedItemNormalizer normalizer)
     {
-        var items = new List<FeedItem>();
-        foreach (var u in uris)
-        {
-            items.AddRange(RetrieveFeed(u, normalizer));
-        }
+        var tasks = uris.Select(uri => RetrieveFeedAsync(uri, normalizer));
+        await Task.WhenAll(tasks);
 
-        return items;
+        return tasks.SelectMany(tasks => tasks.Result);
     }
 
     /// <summary>
@@ -92,10 +93,10 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     /// </summary>
     /// <param name="uri">The uri of the feed to retrieve.</param>
     /// <returns>
-    /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+    /// Returns a task that resolves to an <see cref="IEnumerable{FeedItem}"/> of retrieved <see cref="FeedItem"/>s.
     /// </returns>
-    public IEnumerable<FeedItem> RetrieveFeed(string uri)
-        => RetrieveFeed(uri, DefaultNormalizer);
+    public Task<IEnumerable<FeedItem>> RetrieveFeedAsync(string uri)
+        => RetrieveFeedAsync(uri, DefaultNormalizer);
 
     /// <summary>
     /// Retrieves the specified feed.
@@ -105,13 +106,14 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
     /// </param>
     /// <returns>
-    /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+    /// Returns a task that resolves to an <see cref="IEnumerable{FeedItem}"/> of retrieved <see cref="FeedItem"/>s.
     /// </returns>
-    public IEnumerable<FeedItem> RetrieveFeed(string uri, IFeedItemNormalizer normalizer)
+    public async Task<IEnumerable<FeedItem>> RetrieveFeedAsync(string uri, IFeedItemNormalizer normalizer)
     {
         try
         {
-            return RetrieveFeed(XmlReader.Create(uri), normalizer);
+            using var reader = await GetXmlReaderAsync(uri);
+            return await RetrieveFeedAsync(reader, normalizer);
         }
         catch
         {
@@ -128,9 +130,10 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     /// </summary>
     /// <param name="xmlReader">The <see cref="XmlReader"/> to use to read the items from.</param>
     /// <returns>
-    /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+    /// Returns a task that resolves to an <see cref="IEnumerable{FeedItem}"/> of retrieved <see cref="FeedItem"/>s.
     /// </returns>
-    public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader) => RetrieveFeed(xmlReader, DefaultNormalizer);
+    public Task<IEnumerable<FeedItem>> RetrieveFeedAsync(XmlReader xmlReader) =>
+        RetrieveFeedAsync(xmlReader, DefaultNormalizer);
 
     /// <summary>
     /// Retrieves the specified feed.
@@ -140,9 +143,9 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
     /// </param>
     /// <returns>
-    /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+    /// Returns a task that resolves to an <see cref="IEnumerable{FeedItem}"/> of retrieved <see cref="FeedItem"/>s.
     /// </returns>
-    public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader, IFeedItemNormalizer normalizer)
+    public Task<IEnumerable<FeedItem>> RetrieveFeedAsync(XmlReader xmlReader, IFeedItemNormalizer normalizer)
     {
         if (xmlReader == null)
         {
@@ -154,14 +157,10 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
             throw new ArgumentNullException(nameof(normalizer));
         }
 
-        var items = new List<FeedItem>();
         try
         {
             var feed = SyndicationFeed.Load(xmlReader);
-            foreach (var item in feed.Items)
-            {
-                items.Add(normalizer.Normalize(feed, item));
-            }
+            return Task.FromResult(feed.Items.Select(item => normalizer.Normalize(feed, item)));
         }
         catch
         {
@@ -170,6 +169,23 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
                 throw;
             }
         }
-        return items;
+        return Task.FromResult(Enumerable.Empty<FeedItem>());
+    }
+
+    private static async Task<XmlReader> GetXmlReaderAsync(string uri)
+    {
+        if (Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+        {
+            var response = await _httpclient.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var stream = await response.Content.ReadAsStreamAsync();
+            return XmlReader.Create(stream);
+        }
+        else if (File.Exists(uri))
+        {
+            var stream = File.OpenRead(uri);
+            return XmlReader.Create(stream);
+        }
+        throw new FileNotFoundException($"The file '{uri}' was not found.");
     }
 }
