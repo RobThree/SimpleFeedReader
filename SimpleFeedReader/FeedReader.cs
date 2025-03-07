@@ -17,7 +17,7 @@ namespace SimpleFeedReader;
 /// When true, the <see cref="FeedReader"/> will throw on errors, when false the <see cref="FeedReader"/> will 
 /// suppress exceptions and return empty results.
 /// </param>
-public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool throwOnError)
+public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool throwOnError) : IFeedReader
 {
     private static readonly HttpClient _httpclient = new();
 
@@ -58,62 +58,31 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     public FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer)
         : this(defaultFeedItemNormalizer, false) { }
 
-    /// <summary>
-    /// Retrieves the specified feeds.
-    /// </summary>
-    /// <param name="uris">The uri's of the feeds to retrieve.</param>
-    /// <returns>
-    /// Returns a task that resolves to an <see cref="IEnumerable{FeedItem}"/> of retrieved <see cref="FeedItem"/>s.
-    /// </returns>
-    /// <remarks>This is a convenience method.</remarks>
-    public Task<IEnumerable<FeedItem>> RetrieveFeedsAsync(IEnumerable<string> uris)
-        => RetrieveFeedsAsync(uris, DefaultNormalizer);
+    /// <inheritdoc/>
+    public Task<IEnumerable<FeedItem>> RetrieveFeedsAsync(IEnumerable<string> uris, CancellationToken cancellationToken = default)
+        => RetrieveFeedsAsync(uris, DefaultNormalizer, cancellationToken);
 
-    /// <summary>
-    /// Retrieves the specified feeds.
-    /// </summary>
-    /// <param name="uris">The uri's of the feeds to retrieve.</param>
-    /// <param name="normalizer">
-    /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
-    /// </param>
-    /// <returns>
-    /// Returns a task that resolves to an <see cref="IEnumerable{FeedItem}"/> of retrieved <see cref="FeedItem"/>s.
-    /// </returns>
-    /// <remarks>This is a convenience method.</remarks>
-    public async Task<IEnumerable<FeedItem>> RetrieveFeedsAsync(IEnumerable<string> uris, IFeedItemNormalizer normalizer)
+
+    /// <inheritdoc/>
+    public async Task<IEnumerable<FeedItem>> RetrieveFeedsAsync(IEnumerable<string> uris, IFeedItemNormalizer normalizer, CancellationToken cancellationToken = default)
     {
-        var tasks = uris.Select(uri => RetrieveFeedAsync(uri, normalizer));
+        var tasks = uris.Select(uri => RetrieveFeedAsync(uri, normalizer, cancellationToken));
         await Task.WhenAll(tasks);
 
         return tasks.SelectMany(tasks => tasks.Result);
     }
 
-    /// <summary>
-    /// Retrieves the specified feed.
-    /// </summary>
-    /// <param name="uri">The uri of the feed to retrieve.</param>
-    /// <returns>
-    /// Returns a task that resolves to an <see cref="IEnumerable{FeedItem}"/> of retrieved <see cref="FeedItem"/>s.
-    /// </returns>
-    public Task<IEnumerable<FeedItem>> RetrieveFeedAsync(string uri)
-        => RetrieveFeedAsync(uri, DefaultNormalizer);
+    /// <inheritdoc/>
+    public Task<IEnumerable<FeedItem>> RetrieveFeedAsync(string uri, CancellationToken cancellationToken = default)
+        => RetrieveFeedAsync(uri, DefaultNormalizer, cancellationToken);
 
-    /// <summary>
-    /// Retrieves the specified feed.
-    /// </summary>
-    /// <param name="uri">The uri of the feed to retrieve.</param>
-    /// <param name="normalizer">
-    /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
-    /// </param>
-    /// <returns>
-    /// Returns a task that resolves to an <see cref="IEnumerable{FeedItem}"/> of retrieved <see cref="FeedItem"/>s.
-    /// </returns>
-    public async Task<IEnumerable<FeedItem>> RetrieveFeedAsync(string uri, IFeedItemNormalizer normalizer)
+    /// <inheritdoc/>
+    public async Task<IEnumerable<FeedItem>> RetrieveFeedAsync(string uri, IFeedItemNormalizer normalizer, CancellationToken cancellationToken = default)
     {
         try
         {
-            using var reader = await GetXmlReaderAsync(uri);
-            return await RetrieveFeedAsync(reader, normalizer);
+            using var reader = await GetXmlReaderAsync(uri, cancellationToken);
+            return await RetrieveFeedAsync(reader, normalizer, cancellationToken);
         }
         catch
         {
@@ -125,27 +94,12 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
         return [];
     }
 
-    /// <summary>
-    /// Retrieves the specified feed.
-    /// </summary>
-    /// <param name="xmlReader">The <see cref="XmlReader"/> to use to read the items from.</param>
-    /// <returns>
-    /// Returns a task that resolves to an <see cref="IEnumerable{FeedItem}"/> of retrieved <see cref="FeedItem"/>s.
-    /// </returns>
-    public Task<IEnumerable<FeedItem>> RetrieveFeedAsync(XmlReader xmlReader) =>
-        RetrieveFeedAsync(xmlReader, DefaultNormalizer);
+    /// <inheritdoc/>
+    public Task<IEnumerable<FeedItem>> RetrieveFeedAsync(XmlReader xmlReader, CancellationToken cancellationToken = default) =>
+        RetrieveFeedAsync(xmlReader, DefaultNormalizer, cancellationToken);
 
-    /// <summary>
-    /// Retrieves the specified feed.
-    /// </summary>
-    /// <param name="xmlReader">The <see cref="XmlReader"/> to use to read the items from.</param>
-    /// <param name="normalizer">
-    /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
-    /// </param>
-    /// <returns>
-    /// Returns a task that resolves to an <see cref="IEnumerable{FeedItem}"/> of retrieved <see cref="FeedItem"/>s.
-    /// </returns>
-    public Task<IEnumerable<FeedItem>> RetrieveFeedAsync(XmlReader xmlReader, IFeedItemNormalizer normalizer)
+    /// <inheritdoc/>
+    public Task<IEnumerable<FeedItem>> RetrieveFeedAsync(XmlReader xmlReader, IFeedItemNormalizer normalizer, CancellationToken cancellationToken = default)
     {
         if (xmlReader == null)
         {
@@ -172,11 +126,11 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
         return Task.FromResult(Enumerable.Empty<FeedItem>());
     }
 
-    private static async Task<XmlReader> GetXmlReaderAsync(string uri)
+    private static async Task<XmlReader> GetXmlReaderAsync(string uri, CancellationToken cancellationToken = default)
     {
         if (Uri.IsWellFormedUriString(uri, UriKind.Absolute))
         {
-            var response = await _httpclient.GetAsync(uri);
+            var response = await _httpclient.GetAsync(uri, cancellationToken);
             response.EnsureSuccessStatusCode();
             var stream = await response.Content.ReadAsStreamAsync();
             return XmlReader.Create(stream);
