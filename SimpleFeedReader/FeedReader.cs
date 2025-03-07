@@ -94,7 +94,8 @@ public class FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool thro
     /// <returns>
     /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
     /// </returns>
-    public IEnumerable<FeedItem> RetrieveFeed(string uri) => RetrieveFeed(uri, DefaultNormalizer);
+    public IEnumerable<FeedItem> RetrieveFeed(string uri)
+        => RetrieveFeed(uri, DefaultNormalizer);
 
     /// <summary>
     /// Retrieves the specified feed.

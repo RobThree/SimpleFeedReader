@@ -5,58 +5,52 @@ namespace SimpleFeedReader;
 /// <summary>
 /// Represents an item from a <see cref="SyndicationFeed"/>.
 /// </summary>
-public class FeedItem
+public record FeedItem
 {
     /// <summary>
     /// The Id of the <see cref="FeedItem"/>.
     /// </summary>
-    public string? Id { get; set; }
+    public string? Id { get; init; }
 
     /// <summary>
     /// The Title of the <see cref="FeedItem"/>.
     /// </summary>
-    public string? Title { get; set; }
+    public string? Title { get; init; }
 
     /// <summary>
     /// The Content of the <see cref="FeedItem"/>.
     /// </summary>
-    public string? Content { get; set; }
+    public string? Content { get; init; }
 
     /// <summary>
     /// The Summary of the <see cref="FeedItem"/>.
     /// </summary>
-    public string? Summary { get; set; }
+    public string? Summary { get; init; }
 
     /// <summary>
     /// The Uri of the <see cref="FeedItem"/>.
     /// </summary>
-    public Uri? Uri { get; set; }
+    public Uri? Uri { get; init; }
 
     /// <summary>
     /// The images of the <see cref="FeedItem"/>.
     /// </summary>
-    public IEnumerable<Uri>? Images { get; set; }
+    public IEnumerable<Uri>? Images { get; init; }
 
     /// <summary>
     /// The vategories of the <see cref="FeedItem"/>.
     /// </summary>
-    public IEnumerable<string>? Categories { get; set; }
-
-    /// <summary>
-    /// The Date of the <see cref="FeedItem"/>.
-    /// </summary>
-    [Obsolete("Split into PublishDate and LastUpdatedDate")]
-    public DateTimeOffset? Date => new[] { PublishDate, LastUpdatedDate }.Max();
+    public IEnumerable<string>? Categories { get; init; }
 
     /// <summary>
     /// The publication date of the <see cref="FeedItem"/>.
     /// </summary>
-    public DateTimeOffset? PublishDate { get; set; }
+    public DateTimeOffset? PublishDate { get; init; }
 
     /// <summary>
     /// The date when the feeditem was last updated <see cref="FeedItem"/>.
     /// </summary>
-    public DateTimeOffset? LastUpdatedDate { get; set; }
+    public DateTimeOffset? LastUpdatedDate { get; init; }
 
     /// <summary>
     /// Initializes a new <see cref="FeedItem"/>.
@@ -65,24 +59,6 @@ public class FeedItem
     {
         Images = [];
         Categories = [];
-    }
-
-    /// <summary>
-    /// Initializes a new <see cref="FeedItem"/> by copying the passed item's properties into the new instance.
-    /// </summary>
-    /// <param name="item">The <see cref="FeedItem"/> to copy.</param>
-    /// <remarks>This is a copy-constructor.</remarks>
-    public FeedItem(FeedItem item)
-        : this()
-    {
-        Title = item.Title;
-        Content = item.Content;
-        Summary = item.Summary;
-        Uri = item.Uri;
-        PublishDate = item.PublishDate;
-        LastUpdatedDate = item.LastUpdatedDate;
-        Images = item.Images;
-        Categories = item.Categories;
     }
 
     /// <summary>

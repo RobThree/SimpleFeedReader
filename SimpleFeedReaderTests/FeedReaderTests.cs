@@ -36,11 +36,6 @@ public partial class FeedReaderTests
 
         Assert.IsTrue(items[0].GetContent()?.StartsWith("Lorem ipsum dolor sit"));
         Assert.IsTrue(items[0].GetSummary()?.StartsWith("Lorem ipsum dolor sit"));
-
-#pragma warning disable 0618
-        Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].Date);
-        Assert.AreEqual(DateTimeOffset.MinValue, items[1].Date);
-#pragma warning restore 0618
     }
 
     [TestMethod]
@@ -69,12 +64,6 @@ public partial class FeedReaderTests
 
         Assert.IsTrue(items[0].GetContent()?.StartsWith("Lorem ipsum dolor sit"));
         Assert.IsTrue(items[0].GetSummary()?.StartsWith("Lorem ipsum dolor sit"));
-
-#pragma warning disable 0618
-        Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+02:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].Date);
-        Assert.AreEqual(DateTimeOffset.MinValue, items[1].Date);
-#pragma warning restore 0618
-
         Assert.AreEqual(2, items[0]?.Images?.Count());
         Assert.AreEqual("http://example.org/foo/bar/123abc.png", items[0].Images?.ElementAt(0).ToString());
         Assert.AreEqual("http://example.org/foo/bar/123abc_2.png", items[0].Images?.ElementAt(1).ToString());
@@ -168,11 +157,6 @@ public partial class FeedReaderTests
         Assert.AreEqual("urn:uuid:d58672c4-f62e-483e-ab00-ff0940113e29", items[1].Id);
         Assert.AreEqual(DateTimeOffset.MinValue, items[1].PublishDate);
         Assert.AreEqual(DateTimeOffset.MinValue, items[1].LastUpdatedDate);
-
-#pragma warning disable 0618
-        Assert.AreEqual(DateTimeOffset.Parse("2014-04-16T13:57:35.0000000+00:00", CultureInfo.InvariantCulture, DateTimeStyles.None), items[0].Date);
-        Assert.AreEqual(DateTimeOffset.MinValue, items[1].Date);
-#pragma warning restore 0618
     }
 
     [TestMethod]
@@ -223,7 +207,7 @@ public partial class FeedReaderTests
     }
 
     #region TestClasses
-    private class ExtendedFeedItem : FeedItem
+    private record ExtendedFeedItem : FeedItem
     {
         public string[]? Authors { get; set; }
 
