@@ -49,7 +49,7 @@ namespace SimpleFeedReader
         /// The Date of the <see cref="FeedItem"/>.
         /// </summary>
         [Obsolete("Split into PublishDate and LastUpdatedDate")]
-        public DateTimeOffset Date { get { return new[] { PublishDate, LastUpdatedDate }.Max(); } }
+        public DateTimeOffset Date => new[] { PublishDate, LastUpdatedDate }.Max();
 
         /// <summary>
         /// The publication date of the <see cref="FeedItem"/>.
@@ -93,19 +93,13 @@ namespace SimpleFeedReader
         /// </summary>
         /// <returns>Returns content, if any, otherwise returns the summary as content.</returns>
         /// <remarks>This method is intended as conveinience-method.</remarks>
-        public string GetContent()
-        {
-            return !string.IsNullOrEmpty(Content) ? Content : Summary;
-        }
+        public string GetContent() => !string.IsNullOrEmpty(Content) ? Content : Summary;
 
         /// <summary>
         /// Returns the summary, if any, otherwise returns the content as the summary.
         /// </summary>
         /// <returns>Returns the summary, if any, otherwise returns the content as the summary.</returns>
         /// <remarks>This method is intended as conveinience-method.</remarks>
-        public string GetSummary()
-        {
-            return !string.IsNullOrEmpty(Summary) ? Summary : Content;
-        }
+        public string GetSummary() => !string.IsNullOrEmpty(Summary) ? Summary : Content;
     }
 }

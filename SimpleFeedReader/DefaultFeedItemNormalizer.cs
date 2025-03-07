@@ -20,9 +20,9 @@ namespace SimpleFeedReader
     /// </remarks>
     public class DefaultFeedItemNormalizer : IFeedItemNormalizer
     {
-        private static Regex _htmlRegex = new Regex(@"<[^>]*>", RegexOptions.Compiled);    //@"<(.|\n)*?>"
-        private static Regex _controlCodesRegex = new Regex(@"[\x00-\x1F\x7f]", RegexOptions.Compiled);
-        private static Regex _whiteSpaceRegex = new Regex(@"\s{2,}", RegexOptions.Compiled);
+        private static readonly Regex _htmlregex = new Regex(@"<[^>]*>", RegexOptions.Compiled);    //@"<(.|\n)*?>"
+        private static readonly Regex _controlcodesregex = new Regex(@"[\x00-\x1F\x7f]", RegexOptions.Compiled);
+        private static readonly Regex _whitespaceregex = new Regex(@"\s{2,}", RegexOptions.Compiled);
 
         /// <summary>
         /// Normalizes a SyndicationItem into a FeedItem.
@@ -34,16 +34,7 @@ namespace SimpleFeedReader
         {
             var alternatelink = item.Links.FirstOrDefault(l => l.RelationshipType == null || l.RelationshipType.Equals("alternate", StringComparison.OrdinalIgnoreCase));
 
-            Uri itemuri = null;
-            if (alternatelink == null && !Uri.TryCreate(item.Id, UriKind.Absolute, out Uri parsed))
-            {
-                itemuri = parsed;
-            }
-            else
-            {
-                itemuri = alternatelink.GetAbsoluteUri();
-            }
-
+            var itemuri = alternatelink == null && !Uri.TryCreate(item.Id, UriKind.Absolute, out var parsed) ? parsed : alternatelink.GetAbsoluteUri();
             return new FeedItem
             {
                 Id = string.IsNullOrEmpty(item.Id) ? null : item.Id.Trim(),
@@ -58,12 +49,9 @@ namespace SimpleFeedReader
             };
         }
 
-        private static IEnumerable<Uri> GetFeedItemImages(SyndicationItem item)
-        {
-            return item.ElementExtensions
+        private static IEnumerable<Uri> GetFeedItemImages(SyndicationItem item) => item.ElementExtensions
                 .Where(p => p.OuterName.Equals("image"))
                 .Select(p => new Uri(p.GetObject<XElement>().Value));
-        }
 
         private static string Normalize(string value)
         {
@@ -71,7 +59,9 @@ namespace SimpleFeedReader
             {
                 value = HtmlDecode(value);
                 if (string.IsNullOrEmpty(value))
+                {
                     return value;
+                }
 
                 value = StripHTML(value);
                 value = StripDoubleOrMoreWhiteSpace(RemoveControlChars(value));
@@ -80,35 +70,23 @@ namespace SimpleFeedReader
             return value;
         }
 
-        private static string RemoveControlChars(string value)
-        {
-            return _controlCodesRegex.Replace(value, " ");
-        }
+        private static string RemoveControlChars(string value) => _controlcodesregex.Replace(value, " ");
 
-        private static string StripDoubleOrMoreWhiteSpace(string value)
-        {
-            return _whiteSpaceRegex.Replace(value, " ");
-        }
+        private static string StripDoubleOrMoreWhiteSpace(string value) => _whitespaceregex.Replace(value, " ");
 
-        private static string StripHTML(string value)
-        {
-            return _htmlRegex.Replace(value, " ");
-        }
+        private static string StripHTML(string value) => _htmlregex.Replace(value, " ");
 
         private static string HtmlDecode(string value, int threshold = 5)
         {
-            int c = 0;
-            string newvalue = WebUtility.HtmlDecode(value);
+            var c = 0;
+            var newvalue = WebUtility.HtmlDecode(value);
             while (!newvalue.Equals(value) && c < threshold)    //Keep decoding (if a string is double/triple/... encoded; we want the original)
             {
                 c++;
                 value = newvalue;
                 newvalue = WebUtility.HtmlDecode(value);
             }
-            if (c >= threshold) //Decoding threshold exceeded?
-                return null;
-
-            return newvalue;
+            return c >= threshold ? null : newvalue;
         }
     }
 }

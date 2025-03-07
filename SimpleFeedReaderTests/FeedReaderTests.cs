@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.ServiceModel.Syndication;
-using System.IO;
-using System.Net;
-using System.Xml;
-using System.Text.RegularExpressions;
-using System.Globalization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleFeedReader;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.ServiceModel.Syndication;
+using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace SimpleFeedReaderTests
 {
@@ -89,7 +89,7 @@ namespace SimpleFeedReaderTests
         public void ThrowsWhenRequiredFeedTest1()
         {
             var target = new FeedReader(true);
-            var items = target.RetrieveFeed(@"TestFeeds\non_existing.rss");
+            _ = target.RetrieveFeed(@"TestFeeds\non_existing.rss");
         }
 
         [TestMethod]
@@ -97,14 +97,14 @@ namespace SimpleFeedReaderTests
         public void ThrowsWhenRequiredFeedTest2()
         {
             var target = new FeedReader(true);
-            var items = target.RetrieveFeed(@"http://example.org/non_existing.rss");
+            _ = target.RetrieveFeed(@"http://example.org/non_existing.rss");
         }
 
         [TestMethod]
         public void SuppressesExceptionsWhenRequiredFeedTest()
         {
             var target = new FeedReader(false);
-            var items = target.RetrieveFeed(@"TestFeeds\non_existing.rss");
+            _ = target.RetrieveFeed(@"TestFeeds\non_existing.rss");
         }
 
         [TestMethod]
@@ -141,7 +141,7 @@ namespace SimpleFeedReaderTests
         public void DTDInjectionTest1()
         {
             var target = new FeedReader(true);  //We want to check the exception so don't suppress it
-            var items = target.RetrieveFeed(@"TestFeeds\xml_injection1.rss");
+            _ = target.RetrieveFeed(@"TestFeeds\xml_injection1.rss");
         }
 
         [TestMethod]
@@ -149,7 +149,7 @@ namespace SimpleFeedReaderTests
         public void DTDInjectionTest2()
         {
             var target = new FeedReader(true);  //We want to check the exception so don't suppress it
-            var items = target.RetrieveFeed(@"TestFeeds\xml_injection2.rss");
+            _ = target.RetrieveFeed(@"TestFeeds\xml_injection2.rss");
         }
 
         [TestMethod]
@@ -242,13 +242,10 @@ namespace SimpleFeedReaderTests
 
         private class ExtendedFeedItemNormalizer : DefaultFeedItemNormalizer, IFeedItemNormalizer
         {
-            public override FeedItem Normalize(SyndicationFeed feed, SyndicationItem item)
+            public override FeedItem Normalize(SyndicationFeed feed, SyndicationItem item) => new ExtendedFeedItem(base.Normalize(feed, item))
             {
-                return new ExtendedFeedItem(base.Normalize(feed, item))
-                {
-                    Authors = item.Authors.Select(i => i.Name ?? i.Email).ToArray()
-                };
-            }
+                Authors = item.Authors.Select(i => i.Name ?? i.Email).ToArray()
+            };
         }
 
         /// <summary>
@@ -260,21 +257,24 @@ namespace SimpleFeedReaderTests
             /// Some people, when confronted with a problem, think  “I know, I'll use regular expressions.”
             /// Now they have two problems.     — Jamie Zawinski
             /// </summary>
-            private static Regex _getlines = new Regex("<font(?:(?:\\s+color=\"(?:[#0-9])\")?|(?:\\s+size=\"-[12]\")?|(?:\\s+class=\"[a-zA-Z0-9]\")?)+>(.*?)</font>", RegexOptions.Compiled);
+            private static readonly Regex _getlines = new Regex("<font(?:(?:\\s+color=\"(?:[#0-9])\")?|(?:\\s+size=\"-[12]\")?|(?:\\s+class=\"[a-zA-Z0-9]\")?)+>(.*?)</font>", RegexOptions.Compiled);
 
             public override FeedItem Normalize(SyndicationFeed feed, SyndicationItem item)
             {
                 if (item.Content != null)
+                {
                     item.Content = new TextSyndicationContent(GetLines(((TextSyndicationContent)item.Content).Text)[2]);
+                }
+
                 if (item.Summary != null)
+                {
                     item.Summary = new TextSyndicationContent(GetLines(item.Summary.Text)[2]);
+                }
+
                 return base.Normalize(feed, item);
             }
 
-            private static string[] GetLines(string value)
-            {
-                return _getlines.Matches(value).Cast<Match>().ToArray().Select(m => m.Value).ToArray();
-            }
+            private static string[] GetLines(string value) => _getlines.Matches(value).Cast<Match>().ToArray().Select(m => m.Value).ToArray();
         }
         #endregion
     }

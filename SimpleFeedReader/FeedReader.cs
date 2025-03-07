@@ -72,10 +72,7 @@ namespace SimpleFeedReader
         /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
         /// </returns>
         /// <remarks>This is a convenience method.</remarks>
-        public IEnumerable<FeedItem> RetrieveFeeds(IEnumerable<string> uris)
-        {
-            return RetrieveFeeds(uris, DefaultNormalizer);
-        }
+        public IEnumerable<FeedItem> RetrieveFeeds(IEnumerable<string> uris) => RetrieveFeeds(uris, DefaultNormalizer);
 
         /// <summary>
         /// Retrieves the specified feeds.
@@ -90,9 +87,12 @@ namespace SimpleFeedReader
         /// <remarks>This is a convenience method.</remarks>
         public IEnumerable<FeedItem> RetrieveFeeds(IEnumerable<string> uris, IFeedItemNormalizer normalizer)
         {
-            List<FeedItem> items = new List<FeedItem>();
+            var items = new List<FeedItem>();
             foreach (var u in uris)
+            {
                 items.AddRange(RetrieveFeed(u, normalizer));
+            }
+
             return items;
         }
 
@@ -103,10 +103,7 @@ namespace SimpleFeedReader
         /// <returns>
         /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
         /// </returns>
-        public IEnumerable<FeedItem> RetrieveFeed(string uri)
-        {
-            return RetrieveFeed(uri, DefaultNormalizer);
-        }
+        public IEnumerable<FeedItem> RetrieveFeed(string uri) => RetrieveFeed(uri, DefaultNormalizer);
 
         /// <summary>
         /// Retrieves the specified feed.
@@ -127,7 +124,9 @@ namespace SimpleFeedReader
             catch
             {
                 if (ThrowOnError)
+                {
                     throw;
+                }
             }
             return Enumerable.Empty<FeedItem>();
         }
@@ -139,10 +138,7 @@ namespace SimpleFeedReader
         /// <returns>
         /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
         /// </returns>
-        public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader)
-        {
-            return RetrieveFeed(xmlReader, DefaultNormalizer);
-        }
+        public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader) => RetrieveFeed(xmlReader, DefaultNormalizer);
 
         /// <summary>
         /// Retrieves the specified feed.
@@ -157,21 +153,30 @@ namespace SimpleFeedReader
         public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader, IFeedItemNormalizer normalizer)
         {
             if (xmlReader == null)
+            {
                 throw new ArgumentNullException("xmlReader");
+            }
+
             if (normalizer == null)
+            {
                 throw new ArgumentNullException("normalizer");
+            }
 
             var items = new List<FeedItem>();
             try
             {
                 var feed = SyndicationFeed.Load(xmlReader);
                 foreach (var item in feed.Items)
+                {
                     items.Add(normalizer.Normalize(feed, item));
+                }
             }
             catch
             {
                 if (ThrowOnError)
+                {
                     throw;
+                }
             }
             return items;
         }
