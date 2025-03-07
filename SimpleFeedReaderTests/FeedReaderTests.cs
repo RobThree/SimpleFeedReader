@@ -8,7 +8,7 @@ using System.Xml;
 namespace SimpleFeedReaderTests;
 
 [TestClass]
-public class FeedReaderTests
+public partial class FeedReaderTests
 {
     [TestMethod]
     public void BasicRSSFeedTest()
@@ -75,25 +75,23 @@ public class FeedReaderTests
         Assert.AreEqual(DateTimeOffset.MinValue, items[1].Date);
 #pragma warning restore 0618
 
-        Assert.IsTrue(items[0].Images.Count() == 2);
-        Assert.AreEqual(items[0].Images.ElementAt(0).ToString(), "http://example.org/foo/bar/123abc.png");
-        Assert.AreEqual(items[0].Images.ElementAt(1).ToString(), "http://example.org/foo/bar/123abc_2.png");
+        Assert.AreEqual(2, items[0].Images.Count());
+        Assert.AreEqual("http://example.org/foo/bar/123abc.png", items[0].Images.ElementAt(0).ToString());
+        Assert.AreEqual("http://example.org/foo/bar/123abc_2.png", items[0].Images.ElementAt(1).ToString());
     }
 
     [TestMethod]
-    [ExpectedException(typeof(FileNotFoundException))]
     public void ThrowsWhenRequiredFeedTest1()
     {
         var target = new FeedReader(true);
-        _ = target.RetrieveFeed(@"TestFeeds\non_existing.rss");
+        Assert.ThrowsExactly<FileNotFoundException>(() => _ = target.RetrieveFeed(@"TestFeeds\non_existing.rss"));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(HttpRequestException))]
     public void ThrowsWhenRequiredFeedTest2()
     {
         var target = new FeedReader(true);
-        _ = target.RetrieveFeed(@"http://example.org/non_existing.rss");
+        Assert.ThrowsExactly<HttpRequestException>(() => _ = target.RetrieveFeed(@"http://example.org/non_existing.rss"));
     }
 
     [TestMethod]
@@ -127,25 +125,23 @@ public class FeedReaderTests
         var target = new FeedReader(new ExtendedFeedItemNormalizer(), true);
         var items = target.RetrieveFeed(@"TestFeeds\basic.rss").ToArray();
 
-        Assert.IsInstanceOfType(items[0], typeof(ExtendedFeedItem));
+        Assert.IsInstanceOfType<ExtendedFeedItem>(items[0]);
         Assert.AreEqual(1, ((ExtendedFeedItem)items[0]).Authors.Length);
         Assert.AreEqual("noreply1@example.org (John Doe 1)", ((ExtendedFeedItem)items[0]).Authors[0]);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(XmlException))]
     public void DTDInjectionTest1()
     {
         var target = new FeedReader(true);  //We want to check the exception so don't suppress it
-        _ = target.RetrieveFeed(@"TestFeeds\xml_injection1.rss");
+        Assert.ThrowsExactly<XmlException>(() => _ = target.RetrieveFeed(@"TestFeeds\xml_injection1.rss"));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(XmlException))]
     public void DTDInjectionTest2()
     {
         var target = new FeedReader(true);  //We want to check the exception so don't suppress it
-        _ = target.RetrieveFeed(@"TestFeeds\xml_injection2.rss");
+        Assert.ThrowsExactly<XmlException>(() => _ = target.RetrieveFeed(@"TestFeeds\xml_injection2.rss"));
     }
 
     [TestMethod]
@@ -212,8 +208,8 @@ public class FeedReaderTests
     {
         var target = new FeedReader();
         var items = target.RetrieveFeed(@"TestFeeds\categories.rss").ToArray();
-        Assert.AreEqual(items[0].Categories.ElementAt(0), "NEWS");
-        Assert.AreEqual(items[0].Categories.ElementAt(1), "TEST");
+        Assert.AreEqual("NEWS", items[0].Categories.ElementAt(0));
+        Assert.AreEqual("TEST", items[0].Categories.ElementAt(1));
     }
 
     [TestMethod]
@@ -221,9 +217,9 @@ public class FeedReaderTests
     {
         var target = new FeedReader();
         var items = target.RetrieveFeed(@"TestFeeds\categories.atom").ToArray();
-        Assert.AreEqual(items[0].Categories.ElementAt(0), "a");
-        Assert.AreEqual(items[1].Categories.ElementAt(0), "b");
-        Assert.AreEqual(items[1].Categories.ElementAt(1), "c");
+        Assert.AreEqual("a", items[0].Categories.ElementAt(0));
+        Assert.AreEqual("b", items[1].Categories.ElementAt(0));
+        Assert.AreEqual("c", items[1].Categories.ElementAt(1));
     }
 
     #region TestClasses
@@ -240,20 +236,22 @@ public class FeedReaderTests
     {
         public override FeedItem Normalize(SyndicationFeed feed, SyndicationItem item) => new ExtendedFeedItem(base.Normalize(feed, item))
         {
-            Authors = item.Authors.Select(i => i.Name ?? i.Email).ToArray()
+            Authors = [.. item.Authors.Select(i => i.Name ?? i.Email)]
         };
     }
 
     /// <summary>
     /// Simple sample class (not to be taken TOO seriously) to demonstrate extracting "interesting" stuff from a bunch of HTML crap in the feed
     /// </summary>
-    private class GoogleFeedItemNormalizer : DefaultFeedItemNormalizer, IFeedItemNormalizer
+    private partial class GoogleFeedItemNormalizer : DefaultFeedItemNormalizer, IFeedItemNormalizer
     {
         /// <summary>
         /// Some people, when confronted with a problem, think  “I know, I'll use regular expressions.”
         /// Now they have two problems.     — Jamie Zawinski
         /// </summary>
-        private static readonly Regex _getlines = new("<font(?:(?:\\s+color=\"(?:[#0-9])\")?|(?:\\s+size=\"-[12]\")?|(?:\\s+class=\"[a-zA-Z0-9]\")?)+>(.*?)</font>", RegexOptions.Compiled);
+        [GeneratedRegex("<font(?:(?:\\s+color=\"(?:[#0-9])\")?|(?:\\s+size=\"-[12]\")?|(?:\\s+class=\"[a-zA-Z0-9]\")?)+>(.*?)</font>", RegexOptions.Compiled)]
+        private static partial Regex _getlinesregex();
+        private static readonly Regex _getlines = _getlinesregex();
 
         public override FeedItem Normalize(SyndicationFeed feed, SyndicationItem item)
         {
@@ -270,7 +268,7 @@ public class FeedReaderTests
             return base.Normalize(feed, item);
         }
 
-        private static string[] GetLines(string value) => _getlines.Matches(value).Cast<Match>().ToArray().Select(m => m.Value).ToArray();
+        private static string[] GetLines(string value) => [.. _getlines.Matches(value).Cast<Match>().ToArray().Select(m => m.Value)];
     }
     #endregion
 }

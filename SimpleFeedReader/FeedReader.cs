@@ -1,184 +1,180 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel.Syndication;
+﻿using System.ServiceModel.Syndication;
 using System.Xml;
 
-namespace SimpleFeedReader
+namespace SimpleFeedReader;
+
+/// <summary>
+/// Retrieves <see cref="SyndicationFeed"/>s and normalizes the items from the feed into <see cref="FeedItem"/>s.
+/// </summary>
+public class FeedReader
 {
     /// <summary>
-    /// Retrieves <see cref="SyndicationFeed"/>s and normalizes the items from the feed into <see cref="FeedItem"/>s.
+    /// Gets the default FeedItemNormalizer the <see cref="FeedReader"/> will use when normalizing 
+    /// <see cref="SyndicationItem"/>s.
     /// </summary>
-    public class FeedReader
+    public IFeedItemNormalizer DefaultNormalizer { get; private set; }
+
+    /// <summary>
+    /// Gets wether the FeedReader will throw on exceptions or suppress exceptions and return empty results on
+    /// errors.
+    /// </summary>
+    public bool ThrowOnError { get; private set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FeedReader"/> class.
+    /// </summary>
+    public FeedReader()
+        : this(new DefaultFeedItemNormalizer()) { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FeedReader"/> class.
+    /// </summary>
+    /// <param name="throwOnError">
+    /// When true, the <see cref="FeedReader"/> will throw on errors, when false the <see cref="FeedReader"/> will 
+    /// suppress exceptions and return empty results.
+    /// </param>
+    public FeedReader(bool throwOnError)
+        : this(new DefaultFeedItemNormalizer(), throwOnError) { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FeedReader"/> class.
+    /// </summary>
+    /// <param name="defaultFeedItemNormalizer">
+    /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="SyndicationItem"/>s.
+    /// </param>
+    public FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer)
+        : this(defaultFeedItemNormalizer, false) { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FeedReader"/> class.
+    /// </summary>
+    /// <param name="defaultFeedItemNormalizer">
+    /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="SyndicationItem"/>s.
+    /// </param>
+    /// <param name="throwOnError">
+    /// When true, the <see cref="FeedReader"/> will throw on errors, when false the <see cref="FeedReader"/> will 
+    /// suppress exceptions and return empty results.
+    /// </param>
+    public FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool throwOnError)
     {
-        /// <summary>
-        /// Gets the default FeedItemNormalizer the <see cref="FeedReader"/> will use when normalizing 
-        /// <see cref="SyndicationItem"/>s.
-        /// </summary>
-        public IFeedItemNormalizer DefaultNormalizer { get; private set; }
+        DefaultNormalizer = defaultFeedItemNormalizer ?? throw new ArgumentNullException(nameof(defaultFeedItemNormalizer));
+        ThrowOnError = throwOnError;
+    }
 
-        /// <summary>
-        /// Gets wether the FeedReader will throw on exceptions or suppress exceptions and return empty results on
-        /// errors.
-        /// </summary>
-        public bool ThrowOnError { get; private set; }
+    /// <summary>
+    /// Retrieves the specified feeds.
+    /// </summary>
+    /// <param name="uris">The uri's of the feeds to retrieve.</param>
+    /// <returns>
+    /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+    /// </returns>
+    /// <remarks>This is a convenience method.</remarks>
+    public IEnumerable<FeedItem> RetrieveFeeds(IEnumerable<string> uris) => RetrieveFeeds(uris, DefaultNormalizer);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FeedReader"/> class.
-        /// </summary>
-        public FeedReader()
-            : this(new DefaultFeedItemNormalizer()) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FeedReader"/> class.
-        /// </summary>
-        /// <param name="throwOnError">
-        /// When true, the <see cref="FeedReader"/> will throw on errors, when false the <see cref="FeedReader"/> will 
-        /// suppress exceptions and return empty results.
-        /// </param>
-        public FeedReader(bool throwOnError)
-            : this(new DefaultFeedItemNormalizer(), throwOnError) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FeedReader"/> class.
-        /// </summary>
-        /// <param name="defaultFeedItemNormalizer">
-        /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="SyndicationItem"/>s.
-        /// </param>
-        public FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer)
-            : this(defaultFeedItemNormalizer, false) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FeedReader"/> class.
-        /// </summary>
-        /// <param name="defaultFeedItemNormalizer">
-        /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="SyndicationItem"/>s.
-        /// </param>
-        /// <param name="throwOnError">
-        /// When true, the <see cref="FeedReader"/> will throw on errors, when false the <see cref="FeedReader"/> will 
-        /// suppress exceptions and return empty results.
-        /// </param>
-        public FeedReader(IFeedItemNormalizer defaultFeedItemNormalizer, bool throwOnError)
+    /// <summary>
+    /// Retrieves the specified feeds.
+    /// </summary>
+    /// <param name="uris">The uri's of the feeds to retrieve.</param>
+    /// <param name="normalizer">
+    /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
+    /// </param>
+    /// <returns>
+    /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+    /// </returns>
+    /// <remarks>This is a convenience method.</remarks>
+    public IEnumerable<FeedItem> RetrieveFeeds(IEnumerable<string> uris, IFeedItemNormalizer normalizer)
+    {
+        var items = new List<FeedItem>();
+        foreach (var u in uris)
         {
-            DefaultNormalizer = defaultFeedItemNormalizer ?? throw new ArgumentNullException("defaultFeedItemNormalizer");
-            ThrowOnError = throwOnError;
+            items.AddRange(RetrieveFeed(u, normalizer));
         }
 
-        /// <summary>
-        /// Retrieves the specified feeds.
-        /// </summary>
-        /// <param name="uris">The uri's of the feeds to retrieve.</param>
-        /// <returns>
-        /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
-        /// </returns>
-        /// <remarks>This is a convenience method.</remarks>
-        public IEnumerable<FeedItem> RetrieveFeeds(IEnumerable<string> uris) => RetrieveFeeds(uris, DefaultNormalizer);
+        return items;
+    }
 
-        /// <summary>
-        /// Retrieves the specified feeds.
-        /// </summary>
-        /// <param name="uris">The uri's of the feeds to retrieve.</param>
-        /// <param name="normalizer">
-        /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
-        /// </param>
-        /// <returns>
-        /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
-        /// </returns>
-        /// <remarks>This is a convenience method.</remarks>
-        public IEnumerable<FeedItem> RetrieveFeeds(IEnumerable<string> uris, IFeedItemNormalizer normalizer)
+    /// <summary>
+    /// Retrieves the specified feed.
+    /// </summary>
+    /// <param name="uri">The uri of the feed to retrieve.</param>
+    /// <returns>
+    /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+    /// </returns>
+    public IEnumerable<FeedItem> RetrieveFeed(string uri) => RetrieveFeed(uri, DefaultNormalizer);
+
+    /// <summary>
+    /// Retrieves the specified feed.
+    /// </summary>
+    /// <param name="uri">The uri of the feed to retrieve.</param>
+    /// <param name="normalizer">
+    /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
+    /// </param>
+    /// <returns>
+    /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+    /// </returns>
+    public IEnumerable<FeedItem> RetrieveFeed(string uri, IFeedItemNormalizer normalizer)
+    {
+        try
         {
-            var items = new List<FeedItem>();
-            foreach (var u in uris)
+            return RetrieveFeed(XmlReader.Create(uri), normalizer);
+        }
+        catch
+        {
+            if (ThrowOnError)
             {
-                items.AddRange(RetrieveFeed(u, normalizer));
+                throw;
             }
+        }
+        return [];
+    }
 
-            return items;
+    /// <summary>
+    /// Retrieves the specified feed.
+    /// </summary>
+    /// <param name="xmlReader">The <see cref="XmlReader"/> to use to read the items from.</param>
+    /// <returns>
+    /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+    /// </returns>
+    public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader) => RetrieveFeed(xmlReader, DefaultNormalizer);
+
+    /// <summary>
+    /// Retrieves the specified feed.
+    /// </summary>
+    /// <param name="xmlReader">The <see cref="XmlReader"/> to use to read the items from.</param>
+    /// <param name="normalizer">
+    /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
+    /// </param>
+    /// <returns>
+    /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
+    /// </returns>
+    public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader, IFeedItemNormalizer normalizer)
+    {
+        if (xmlReader == null)
+        {
+            throw new ArgumentNullException(nameof(xmlReader));
         }
 
-        /// <summary>
-        /// Retrieves the specified feed.
-        /// </summary>
-        /// <param name="uri">The uri of the feed to retrieve.</param>
-        /// <returns>
-        /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
-        /// </returns>
-        public IEnumerable<FeedItem> RetrieveFeed(string uri) => RetrieveFeed(uri, DefaultNormalizer);
-
-        /// <summary>
-        /// Retrieves the specified feed.
-        /// </summary>
-        /// <param name="uri">The uri of the feed to retrieve.</param>
-        /// <param name="normalizer">
-        /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
-        /// </param>
-        /// <returns>
-        /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
-        /// </returns>
-        public IEnumerable<FeedItem> RetrieveFeed(string uri, IFeedItemNormalizer normalizer)
+        if (normalizer == null)
         {
-            try
-            {
-                return RetrieveFeed(XmlReader.Create(uri), normalizer);
-            }
-            catch
-            {
-                if (ThrowOnError)
-                {
-                    throw;
-                }
-            }
-            return Enumerable.Empty<FeedItem>();
+            throw new ArgumentNullException(nameof(normalizer));
         }
 
-        /// <summary>
-        /// Retrieves the specified feed.
-        /// </summary>
-        /// <param name="xmlReader">The <see cref="XmlReader"/> to use to read the items from.</param>
-        /// <returns>
-        /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
-        /// </returns>
-        public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader) => RetrieveFeed(xmlReader, DefaultNormalizer);
-
-        /// <summary>
-        /// Retrieves the specified feed.
-        /// </summary>
-        /// <param name="xmlReader">The <see cref="XmlReader"/> to use to read the items from.</param>
-        /// <param name="normalizer">
-        /// The <see cref="IFeedItemNormalizer"/> to use when normalizing <see cref="FeedItem"/>s.
-        /// </param>
-        /// <returns>
-        /// Returns an <see cref="IEnumerable&lt;FeedItem&gt;"/> of retrieved <see cref="FeedItem"/>s.
-        /// </returns>
-        public IEnumerable<FeedItem> RetrieveFeed(XmlReader xmlReader, IFeedItemNormalizer normalizer)
+        var items = new List<FeedItem>();
+        try
         {
-            if (xmlReader == null)
+            var feed = SyndicationFeed.Load(xmlReader);
+            foreach (var item in feed.Items)
             {
-                throw new ArgumentNullException("xmlReader");
+                items.Add(normalizer.Normalize(feed, item));
             }
-
-            if (normalizer == null)
-            {
-                throw new ArgumentNullException("normalizer");
-            }
-
-            var items = new List<FeedItem>();
-            try
-            {
-                var feed = SyndicationFeed.Load(xmlReader);
-                foreach (var item in feed.Items)
-                {
-                    items.Add(normalizer.Normalize(feed, item));
-                }
-            }
-            catch
-            {
-                if (ThrowOnError)
-                {
-                    throw;
-                }
-            }
-            return items;
         }
+        catch
+        {
+            if (ThrowOnError)
+            {
+                throw;
+            }
+        }
+        return items;
     }
 }
